@@ -36,6 +36,7 @@ svg
     .call(zoom) // delete this line to disable free zooming
     .call(zoom.event);
 
+// map gets drawn here
 d3.json("data/us.json", function(error, us) {
   g.selectAll("path")
       .data(topojson.feature(us, us.objects.states).features)
@@ -48,8 +49,29 @@ d3.json("data/us.json", function(error, us) {
       .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
       .attr("class", "mesh")
       .attr("d", path);
+
+  // read in data from CSV
+  d3.csv("data/dummy_data.csv", function(error, data) {
+
+              g.selectAll("circle")
+              .data(data)
+              .enter()
+              .append("circle")
+              .attr("cx", function(d) {
+                  return projection([d.longitude, d.latitude])[0];
+              })
+              .attr("cy", function(d) {
+                  return projection([d.longitude, d.latitude])[1];
+              })
+              .attr("r", 2)
+              .attr("d", data)
+              .attr("class", "city")
+              .style("fill", "red");
+  });
+
 });
 
+// Helper functions for map
 function clicked(d) {
   if (active.node() === this) return reset();
   active.classed("active", false);
