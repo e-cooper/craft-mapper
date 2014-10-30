@@ -1,1 +1,26 @@
 /* Main CSS file for page styling */
+
+/* CSS from  http://bl.ocks.org/mbostock/9656675 */
+
+.background {
+  fill: none;
+  pointer-events: all;
+}
+
+.feature {
+  fill: #ccc;
+  cursor: pointer;
+}
+
+.feature.active {
+  fill: orange;
+}
+
+.mesh {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* end block from http://bl.ocks.org/mbostock/9656675 */
