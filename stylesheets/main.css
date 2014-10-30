@@ -24,3 +24,14 @@
 }
 
 /* end block from http://bl.ocks.org/mbostock/9656675 */
+
+div.brewDiv {
+    position: absolute;
+    text-align: center;
+    width: 60px;
+    padding: 8px;
+    font: 10px sans-serif;
+    background: #ddd;
+    border: solid 1px #aaa;
+    pointer-events: none;
+}

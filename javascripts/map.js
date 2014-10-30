@@ -36,6 +36,17 @@ svg
     .call(zoom) // delete this line to disable free zooming
     .call(zoom.event);
 
+var data = d3.range(20).map(function() {
+  var latitude = Math.random() + 33;
+  var longitude = (-1 * Math.random()) - 84;
+  var name = Math.random().toString(36).substring(7);
+  return [
+    latitude,
+    longitude,
+    name
+  ];
+});
+
 // map gets drawn here
 d3.json("data/us.json", function(error, us) {
   g.selectAll("path")
@@ -50,24 +61,26 @@ d3.json("data/us.json", function(error, us) {
       .attr("class", "mesh")
       .attr("d", path);
 
-  // read in data from CSV
-  d3.csv("data/dummy_data.csv", function(error, data) {
+  // read in data from CSV here
+  // d3.csv("data/dummy_data.csv", function(error, data) {
 
-              g.selectAll("circle")
-              .data(data)
-              .enter()
-              .append("circle")
-              .attr("cx", function(d) {
-                  return projection([d.longitude, d.latitude])[0];
-              })
-              .attr("cy", function(d) {
-                  return projection([d.longitude, d.latitude])[1];
-              })
-              .attr("r", 2)
-              .attr("d", data)
-              .attr("class", "city")
-              .style("fill", "red");
-  });
+  // });
+
+    g.selectAll("circle")
+      .data(data)
+    .enter().append("circle")
+      .attr("cx", function(d) {
+        return projection([d[1], d[0]])[0];
+      })
+      .attr("cy", function(d) {
+        return projection([d[1], d[0]])[1];
+      })
+      .attr("r", 1)
+      .attr("d", data[0])
+      .style("fill", "red")
+      .on("mouseover", brewMouseover)
+      .on("mouseout", brewMouseout)
+      .on("mousemove", brewMousemove);
 
 });
 
@@ -108,4 +121,28 @@ function zoomed() {
 // also stop propagation so we don’t click-to-zoom.
 function stopped() {
   if (d3.event.defaultPrevented) d3.event.stopPropagation();
+}
+
+var div = d3.select(".map").append("div")
+    .attr("class", "brewDiv")
+    .style("opacity", 0)
+
+function brewMouseover() {
+  div
+    .transition()
+    .duration(500)
+    .style("opacity", 1);
+}
+
+function brewMousemove(d) {
+  div
+    .style("left", (d3.event.pageX) + "px")
+    .style("top", (d3.event.pageY) + "px")
+    .text(d[2])
+}
+function brewMouseout() {
+  div
+    .transition()
+    .duration(500)
+    .style("opacity", 0)
 }
