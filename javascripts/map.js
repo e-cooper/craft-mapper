@@ -36,17 +36,6 @@ svg
     .call(zoom) // delete this line to disable free zooming
     .call(zoom.event);
 
-var data = d3.range(100).map(function() {
-  var latitude = Math.random() + 33;
-  var longitude = (-1 * Math.random()) - 84;
-  var name = Math.random().toString(36).substring(7);
-  return [
-    latitude,
-    longitude,
-    name
-  ];
-});
-
 // map gets drawn here
 d3.json("data/us.json", function(error, us) {
   g.selectAll("path")
@@ -62,18 +51,23 @@ d3.json("data/us.json", function(error, us) {
       .attr("d", path);
 
   // read in data from CSV here
-  // d3.csv("data/dummy_data.csv", function(error, data) {
-
-  // });
-
+  d3.csv("data/data.csv", function(error, data) {
     g.selectAll("circle")
       .data(data)
     .enter().append("circle")
       .attr("cx", function(d) {
-        return projection([d[1], d[0]])[0];
+        longitude = parseFloat(d.longitude);
+        latitude = parseFloat(d.latitude);
+        if (!isNaN(longitude) && !isNaN(latitude)) {
+            return projection([d.longitude, d.latitude])[0];
+        }
       })
       .attr("cy", function(d) {
-        return projection([d[1], d[0]])[1];
+        longitude = parseFloat(d.longitude);
+        latitude = parseFloat(d.latitude);
+        if (!isNaN(longitude) && !isNaN(latitude)) {
+            return projection([d.longitude, d.latitude])[1];
+        }
       })
       .attr("r", 1)
       .attr("d", data[0])
@@ -81,6 +75,8 @@ d3.json("data/us.json", function(error, us) {
       .on("mouseover", brewMouseover)
       .on("mouseout", brewMouseout)
       .on("mousemove", brewMousemove);
+
+  });
 
 });
 
