@@ -36,7 +36,7 @@ svg
     .call(zoom) // delete this line to disable free zooming
     .call(zoom.event);
 
-var data = d3.range(20).map(function() {
+var data = d3.range(100).map(function() {
   var latitude = Math.random() + 33;
   var longitude = (-1 * Math.random()) - 84;
   var name = Math.random().toString(36).substring(7);
