@@ -60,3 +60,29 @@ body {
   fill-opacity: .125;
   shape-rendering: crispEdges;
 }
+
+.map-data {
+}
+
+.map {
+  width: 960px;
+  height: 500px;
+  float: left;
+  margin: 15px;
+}
+
+.brewery-view {
+  width: 300px;
+  height: 500px;
+  float: left;
+}
+
+.breweryName {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.breweryInfo {
+  font-weight: normal;
+}

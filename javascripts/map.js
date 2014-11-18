@@ -4,7 +4,9 @@
 
 var width = 960,
     height = 500,
-    active = d3.select(null);
+    active = d3.select(null),
+    brewViewWidth = 300,
+    brewViewHeight = 500;
 
 var projection = d3.geo.albersUsa()
     .scale(1000)
@@ -70,7 +72,7 @@ d3.json("data/us.json", function(error, us) {
         }
       })
       .attr("r", 1)
-      .attr("d", data[0])
+      .attr("d", data)
       .style("fill", "red")
       .on("mouseover", brewMouseover)
       .on("mouseout", brewMouseout)
@@ -123,22 +125,48 @@ var div = d3.select(".map").append("div")
     .attr("class", "brewDiv")
     .style("opacity", 0)
 
+var breweryDiv = d3.select(".brewery-view").append("div")
+    .attr("class", "breweryDiv")
+    .style("opacity", 0)
+
 function brewMouseover() {
   div
     .transition()
     .duration(500)
-    .style("opacity", 1);
+    .style("opacity", 1)
+
+  breweryDiv
+    .style("opacity", 1)
 }
 
 function brewMousemove(d) {
   div
     .style("left", (d3.event.pageX) + "px")
     .style("top", (d3.event.pageY) + "px")
-    .text(d[2])
+    .text(d.name)
+
+  breweryDiv
+    .text("")
+    .append("p")
+      .attr("class", "breweryName")
+      .text(d.name)
+    .append("p")
+      .attr("class", "breweryInfo")
+      .text(d.yearOpened)
+    .append("p")
+      .attr("class", "breweryInfo")
+      .text(d.website)
+    .append("p")
+      .attr("class", "breweryInfo")
+      .text(d.description)
 }
+
 function brewMouseout() {
   div
     .transition()
     .duration(500)
+    .style("opacity", 0)
+
+  breweryDiv
     .style("opacity", 0)
 }
