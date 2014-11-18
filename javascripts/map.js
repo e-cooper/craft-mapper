@@ -4,7 +4,9 @@
 
 var width = 960,
     height = 500,
-    active = d3.select(null);
+    active = d3.select(null),
+    brewViewWidth = 300,
+    brewViewHeight = 500;
 
 var projection = d3.geo.albersUsa()
     .scale(1000)
@@ -50,23 +52,32 @@ d3.json("data/us.json", function(error, us) {
       .attr("class", "mesh")
       .attr("d", path);
 
-  // read in data from CSV
-  d3.csv("data/dummy_data.csv", function(error, data) {
+  // read in data from CSV here
+  d3.csv("data/data.csv", function(error, data) {
+    g.selectAll("circle")
+      .data(data)
+    .enter().append("circle")
+      .attr("cx", function(d) {
+        longitude = parseFloat(d.longitude);
+        latitude = parseFloat(d.latitude);
+        if (!isNaN(longitude) && !isNaN(latitude)) {
+            return projection([d.longitude, d.latitude])[0];
+        }
+      })
+      .attr("cy", function(d) {
+        longitude = parseFloat(d.longitude);
+        latitude = parseFloat(d.latitude);
+        if (!isNaN(longitude) && !isNaN(latitude)) {
+            return projection([d.longitude, d.latitude])[1];
+        }
+      })
+      .attr("r", 1)
+      .attr("d", data)
+      .style("fill", "red")
+      .on("mouseover", brewMouseover)
+      .on("mouseout", brewMouseout)
+      .on("mousemove", brewMousemove);
 
-              g.selectAll("circle")
-              .data(data)
-              .enter()
-              .append("circle")
-              .attr("cx", function(d) {
-                  return projection([d.longitude, d.latitude])[0];
-              })
-              .attr("cy", function(d) {
-                  return projection([d.longitude, d.latitude])[1];
-              })
-              .attr("r", 2)
-              .attr("d", data)
-              .attr("class", "city")
-              .style("fill", "red");
   });
 
 });
@@ -108,4 +119,54 @@ function zoomed() {
 // also stop propagation so we don’t click-to-zoom.
 function stopped() {
   if (d3.event.defaultPrevented) d3.event.stopPropagation();
+}
+
+var div = d3.select(".map").append("div")
+    .attr("class", "brewDiv")
+    .style("opacity", 0)
+
+var breweryDiv = d3.select(".brewery-view").append("div")
+    .attr("class", "breweryDiv")
+    .style("opacity", 0)
+
+function brewMouseover() {
+  div
+    .transition()
+    .duration(500)
+    .style("opacity", 1)
+
+  breweryDiv
+    .style("opacity", 1)
+}
+
+function brewMousemove(d) {
+  div
+    .style("left", (d3.event.pageX) + "px")
+    .style("top", (d3.event.pageY) + "px")
+    .text(d.name)
+
+  breweryDiv
+    .text("")
+    .append("p")
+      .attr("class", "breweryName")
+      .text(d.name)
+    .append("p")
+      .attr("class", "breweryInfo")
+      .text(d.yearOpened)
+    .append("p")
+      .attr("class", "breweryInfo")
+      .text(d.website)
+    .append("p")
+      .attr("class", "breweryInfo")
+      .text(d.description)
+}
+
+function brewMouseout() {
+  div
+    .transition()
+    .duration(500)
+    .style("opacity", 0)
+
+  breweryDiv
+    .style("opacity", 0)
 }
