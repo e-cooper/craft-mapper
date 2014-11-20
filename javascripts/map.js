@@ -187,6 +187,7 @@ function brewMouseover() {
 }
 
 function brewMousemove(d) {
+  var breweryRating = breweryRatingDict[d.id]
   div
     .style("left", (d3.event.pageX) + "px")
     .style("top", (d3.event.pageY) + "px")
@@ -199,7 +200,10 @@ function brewMousemove(d) {
       .text(d.name)
     .append("p")
       .attr("class", "breweryInfo")
-      .text(breweryRatingDict[d.id].breweryRating)
+      .text(breweryRating.breweryRating)
+    .append("p")
+      .attr("class", "breweryInfo")
+      .text(breweryRating.beerRating)
     .append("p")
       .attr("class", "breweryInfo")
       .text(d.yearOpened)
