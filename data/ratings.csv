@@ -1,4 +1,4 @@
-breweryDB ID,name,beerAdvocate endpoint,breweryRating,beerRating
+breweryID,name,beerAdvocate endpoint,breweryRating,beerRating
 Af10Nt,#FREEDOM Craft Brewery,,,-
 ZHGArj,1188 Brewing Company,/beer/profile/35739/,,4.05
 vM3y9r,101 North Brewing Company,/beer/profile/31027/,,3.6

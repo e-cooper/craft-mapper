@@ -2,11 +2,14 @@
 
 // Map zooming code from http://bl.ocks.org/mbostock/9656675
 
+// define any global vars
 var width = 960,
     height = 500,
     active = d3.select(null),
     brewViewWidth = 300,
-    brewViewHeight = 500;
+    brewViewHeight = 500,
+    beerDict = {},
+    breweryRatingDict = {};
 
 var projection = d3.geo.albersUsa()
     .scale(1000)
@@ -39,48 +42,92 @@ svg
     .call(zoom.event);
 
 // map gets drawn here
-d3.json("data/us.json", function(error, us) {
-  g.selectAll("path")
-      .data(topojson.feature(us, us.objects.states).features)
-    .enter().append("path")
-      .attr("d", path)
-      .attr("class", "feature")
-      .on("click", clicked);
+function drawMap() {
+  d3.json("data/us.json", function(error, us) {
+    g.selectAll("path")
+        .data(topojson.feature(us, us.objects.states).features)
+      .enter().append("path")
+        .attr("d", path)
+        .attr("class", "feature")
+        .on("click", clicked);
 
-  g.append("path")
-      .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
-      .attr("class", "mesh")
-      .attr("d", path);
+    g.append("path")
+        .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+        .attr("class", "mesh")
+        .attr("d", path);
 
-  // read in data from CSV here
-  d3.csv("data/data.csv", function(error, data) {
-    g.selectAll("circle")
-      .data(data)
-    .enter().append("circle")
-      .attr("cx", function(d) {
-        longitude = parseFloat(d.longitude);
-        latitude = parseFloat(d.latitude);
-        if (!isNaN(longitude) && !isNaN(latitude)) {
-            return projection([d.longitude, d.latitude])[0];
-        }
-      })
-      .attr("cy", function(d) {
-        longitude = parseFloat(d.longitude);
-        latitude = parseFloat(d.latitude);
-        if (!isNaN(longitude) && !isNaN(latitude)) {
-            return projection([d.longitude, d.latitude])[1];
-        }
-      })
-      .attr("r", 1)
-      .attr("d", data)
-      .style("fill", "red")
-      .on("mouseover", brewMouseover)
-      .on("mouseout", brewMouseout)
-      .on("mousemove", brewMousemove);
+    // read in data from CSV here
+    d3.csv("data/data.csv", function(error, data) {
+      g.selectAll("circle")
+        .data(data)
+      .enter().append("circle")
+        .attr("cx", function(d) {
+          longitude = parseFloat(d.longitude);
+          latitude = parseFloat(d.latitude);
+          if (!isNaN(longitude) && !isNaN(latitude)) {
+              return projection([d.longitude, d.latitude])[0];
+          }
+        })
+        .attr("cy", function(d) {
+          longitude = parseFloat(d.longitude);
+          latitude = parseFloat(d.latitude);
+          if (!isNaN(longitude) && !isNaN(latitude)) {
+              return projection([d.longitude, d.latitude])[1];
+          }
+        })
+        .attr("r", 1)
+        .attr("d", data)
+        .style("fill", "red")
+        .attr("opacity", .2)
+        .on("mouseover", brewMouseover)
+        .on("mouseout", brewMouseout)
+        .on("mousemove", brewMousemove);
+
+    });
 
   });
+}
 
-});
+// Load in the beer data using papaparse
+function loadBeerData() {
+  var beer = Papa.parse("data/beer.csv", {
+    header: true,
+    download: true,
+    complete: function(results) {
+      beerCallback(results.data)
+    }
+  });
+}
+
+// add the beers for each brewery to the beerDict dictionary
+// for access later
+function beerCallback(data) {
+  for(var i = 0; i < data.length; i++) {
+    var exists = beerDict[data[i].breweryID]
+    var key = data[i].breweryID
+    if (exists == null) {
+      beerDict[key] = new Array()
+    }
+    beerDict[key].push(data[i])
+  }
+}
+
+// Load in the brewery rating data
+function loadBreweryRatingData() {
+  var brewRating = Papa.parse("data/ratings.csv", {
+    header: true,
+    download: true,
+    complete: function(results) {
+      breweryRatingCallback(results.data)
+    }
+  });
+}
+
+function breweryRatingCallback(data) {
+  for(var i = 0; i < data.length; i++) {
+    breweryRatingDict[data[i].breweryID] = data[i]
+  }
+}
 
 // Helper functions for map
 function clicked(d) {
@@ -140,6 +187,7 @@ function brewMouseover() {
 }
 
 function brewMousemove(d) {
+  var breweryRating = breweryRatingDict[d.id]
   div
     .style("left", (d3.event.pageX) + "px")
     .style("top", (d3.event.pageY) + "px")
@@ -152,6 +200,12 @@ function brewMousemove(d) {
       .text(d.name)
     .append("p")
       .attr("class", "breweryInfo")
+      .text(breweryRating.breweryRating)
+    .append("p")
+      .attr("class", "breweryInfo")
+      .text(breweryRating.beerRating)
+    .append("p")
+      .attr("class", "breweryInfo")
       .text(d.yearOpened)
     .append("p")
       .attr("class", "breweryInfo")
@@ -159,6 +213,12 @@ function brewMousemove(d) {
     .append("p")
       .attr("class", "breweryInfo")
       .text(d.description)
+
+    var beers = beerDict[d.id]
+    beers.forEach(function(entry) {
+      breweryDiv.append("p")
+        .text(entry.name)
+    });
 }
 
 function brewMouseout() {
@@ -170,3 +230,9 @@ function brewMouseout() {
   breweryDiv
     .style("opacity", 0)
 }
+
+// put neccessary functions to setup project here
+
+loadBeerData()
+loadBreweryRatingData()
+drawMap()
