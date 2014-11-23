@@ -86,3 +86,13 @@ body {
 .breweryInfo {
   font-weight: normal;
 }
+
+.timeline {
+  width: 960px;
+}
+
+#year {
+  border: 0; 
+  color: #f6931f; 
+  font-weight: bold;
+}
