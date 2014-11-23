@@ -9,7 +9,9 @@ var width = 960,
     brewViewWidth = 300,
     brewViewHeight = 500,
     beerDict = {},
-    breweryRatingDict = {};
+    breweryRatingDict = {},
+    minYear = 1786, 
+    maxYear = 2014;
 
 var projection = d3.geo.albersUsa()
     .scale(1000)
@@ -43,6 +45,7 @@ svg
 
 // map gets drawn here
 function drawMap() {
+  g.selectAll("circle").remove();
   d3.json("data/us.json", function(error, us) {
     g.selectAll("path")
         .data(topojson.feature(us, us.objects.states).features)
@@ -58,6 +61,17 @@ function drawMap() {
 
     // read in data from CSV here
     d3.csv("data/data.csv", function(error, data) {
+
+      data = data.filter(function(row) {
+        // if (row['yearOpened']) {
+          var year = row['yearOpened']
+        // }
+        // else {
+        //   year = minYear // Don't exclude rows with missing years for now
+        // }
+        return (year >= minYear && year <= maxYear)
+      })
+
       g.selectAll("circle")
         .data(data)
       .enter().append("circle")
@@ -237,6 +251,24 @@ function brewMouseout() {
   breweryDiv
     .style("opacity", 0)
 }
+
+//timeline filter
+$(function() {
+  $( "#slider-range" ).slider({
+    range: true,
+    min: 1786,
+    max: 2014,
+    values: [ 1786, 2014 ],
+    slide: function( event, ui ) {
+      $( "#year" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] )
+      minYear = ui.values[0]
+      maxYear = ui.values[1]
+      drawMap()
+    }
+  });
+  $( "#year" ).val( $( "#slider-range" ).slider( "values", 0 ) +
+    " - " + $( "#slider-range" ).slider( "values", 1 ) );
+});
 
 // put neccessary functions to setup project here
 
