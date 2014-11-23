@@ -20,7 +20,7 @@ var projection = d3.geo.albersUsa()
 var zoom = d3.behavior.zoom()
     .translate([0, 0])
     .scale(1)
-    .scaleExtent([1, 8])
+    .scaleExtent([1, 20])
     .on("zoom", zoomed);
 
 var path = d3.geo.path()
@@ -40,8 +40,8 @@ svg.append("rect")
 var g = svg.append("g");
 
 svg
-    .call(zoom) // delete this line to disable free zooming
-    .call(zoom.event);
+  .call(zoom) // delete this line to disable free zooming
+  .call(zoom.event);
 
 // map gets drawn here
 function drawMap() {
@@ -92,7 +92,8 @@ function drawMap() {
         .attr("r", 1)
         .attr("d", data)
         .style("fill", "red")
-        .attr("opacity", .2)
+        .attr("opacity", .5)
+        .attr("class", "dataPoint")
         .on("mouseover", brewMouseover)
         .on("mouseout", brewMouseout)
         .on("mousemove", brewMousemove);
@@ -174,6 +175,12 @@ function reset() {
 function zoomed() {
   g.style("stroke-width", 1.5 / d3.event.scale + "px");
   g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+  var radius = 1 / d3.event.scale
+  // scale the radius of the points but prevent from being too small/big
+  radius = radius < .4 ? .4 : radius
+  radius = radius <= 1 ? radius : 1
+  g.selectAll(".dataPoint")
+    .attr("r", radius)
 }
 
 // If the drag behavior prevents the default click,
