@@ -98,6 +98,9 @@ body {
   font-weight: bold;
 }
 
+.bar text {
+  fill: #000;
+}
 .breweryRating {
   width: 50px;
   height: 50px;
