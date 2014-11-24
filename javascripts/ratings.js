@@ -1,7 +1,7 @@
 // Rating chart code
 
-var binsize = 5;
-var minbin = 65;
+var binsize = 2;
+var minbin = 66;
 var maxbin = 100;
 var numbins = (maxbin - minbin) / binsize;
 var binmargin = 2;
@@ -86,5 +86,9 @@ d3.csv("data/ratings.csv", function(error, data) {
 });
 
 function brushed() {
-  
+  d3.selectAll("circle").attr("visibility", function(d) {
+    var brewery = breweryRatingDict[d.id];
+    var rating = +brewery.breweryRating;
+    return (rating >= brush.extent()[0] && rating <= brush.extent()[1]) || brush.empty() ? "visible" : "hidden";
+  });
 }
