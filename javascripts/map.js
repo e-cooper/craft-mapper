@@ -249,7 +249,9 @@ $(function() {
     slide: function( event, ui ) {
       $( "#year" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] )
       d3.selectAll("circle").attr("visibility", function(d) {
-        return d.yearOpened >= ui.values[0] && d.yearOpened <= ui.values[1] ? "visible" : "hidden";
+        if (d.yearOpened || ui.values[1] != 2014) {
+          return d.yearOpened >= ui.values[0] && d.yearOpened <= ui.values[1] ? "visible" : "hidden";
+        }
       });
     }
   });
