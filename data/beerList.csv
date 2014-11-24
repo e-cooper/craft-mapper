@@ -1,4 +1,4 @@
-breweryDB,breweryName,beerEndpoint,beerName,style,abv,
+breweryID,breweryName,beerEndpoint,beerName,style,abv,
 Af10Nt,#FREEDOM Craft Brewery,,Welcome to BeerAdvocate (BA). Respect Beer.,,,
 ZHGArj,1188 Brewing Company,/beer/profile/35739/141349/,Black Oak Instigator,American Porter,8.00%,
 ZHGArj,1188 Brewing Company,/beer/profile/35739/141348/,Box Canyon Pale,American Pale Ale (APA),5.00%,
