@@ -105,7 +105,7 @@ function drawMap() {
 
 // Load in the beer data using papaparse
 function loadBeerData() {
-  var beer = Papa.parse("data/beer.csv", {
+  var beer = Papa.parse("data/beerList.csv", {
     header: true,
     download: true,
     complete: function(results) {
@@ -238,7 +238,7 @@ function brewMousemove(d) {
     var beers = beerDict[d.id]
     beers.forEach(function(entry) {
       breweryDiv.append("p")
-        .text(entry.name)
+        .text(entry.beerName)
     });
 }
 
