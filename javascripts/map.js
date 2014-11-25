@@ -206,9 +206,21 @@ function brewMousemove(d) {
     .append("p")
       .attr("class", "breweryName")
       .text(d.name)
-    .append("p")
-      .attr("class", "breweryInfo")
-      .text(breweryRating.breweryRating)
+
+  if(breweryRating.breweryRating != "") {
+    breweryDiv
+      .append("div")
+        .attr("class", "breweryStats")
+        .append("div")
+          .attr("class", "breweryRating")
+          .append("p")
+            .text("Rating")
+          .append("p")
+            .attr("class", "bRNumber")
+            .text(breweryRating.breweryRating)
+  }
+
+  breweryDiv
     .append("p")
       .attr("class", "breweryInfo")
       .text(breweryRating.beerRating)

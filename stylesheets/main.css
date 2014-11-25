@@ -96,3 +96,40 @@ body {
   color: #f6931f; 
   font-weight: bold;
 }
+
+.breweryRating {
+  width: 50px;
+  height: 50px;
+  background-color: lightgrey;
+  margin-top: 10px;
+}
+
+.breweryRating p {
+  text-align: center;
+  margin: 0px;
+}
+
+.breweryRating .bRNumber {
+  font-size: 25px;
+}
+
+.breweryBeerRating {
+  width: 50px;
+  height: 50px;
+  background-color: lightgrey;
+  margin-top: 10px;
+  margin-left: 5px;
+}
+
+.breweryBeerRating p {
+  text-align: center;
+  margin: 0px;
+}
+
+.breweryBeerRating .bRNumber {
+  font-size: 25px;
+}
+
+.breweryStats {
+
+}
