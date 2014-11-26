@@ -18,7 +18,7 @@ var projection = d3.geo.albersUsa()
 var zoom = d3.behavior.zoom()
     .translate([0, 0])
     .scale(1)
-    .scaleExtent([1, 8])
+    .scaleExtent([1, 20])
     .on("zoom", zoomed);
 
 var path = d3.geo.path()
@@ -38,8 +38,8 @@ svg.append("rect")
 var g = svg.append("g");
 
 svg
-    .call(zoom) // delete this line to disable free zooming
-    .call(zoom.event);
+  .call(zoom) // delete this line to disable free zooming
+  .call(zoom.event);
 
 // map gets drawn here
 function drawMap() {
@@ -58,6 +58,7 @@ function drawMap() {
 
     // read in data from CSV here
     d3.csv("data/data.csv", function(error, data) {
+
       g.selectAll("circle")
         .data(data)
       .enter().append("circle")
@@ -78,7 +79,8 @@ function drawMap() {
         .attr("r", 1)
         .attr("d", data)
         .style("fill", "red")
-        .attr("opacity", .2)
+        .attr("opacity", .5)
+        .attr("class", "dataPoint")
         .on("mouseover", brewMouseover)
         .on("mouseout", brewMouseout)
         .on("mousemove", brewMousemove);
@@ -90,7 +92,7 @@ function drawMap() {
 
 // Load in the beer data using papaparse
 function loadBeerData() {
-  var beer = Papa.parse("data/beer.csv", {
+  var beer = Papa.parse("data/beerList.csv", {
     header: true,
     download: true,
     complete: function(results) {
@@ -160,6 +162,12 @@ function reset() {
 function zoomed() {
   g.style("stroke-width", 1.5 / d3.event.scale + "px");
   g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+  var radius = 1 / d3.event.scale
+  // scale the radius of the points but prevent from being too small/big
+  radius = radius < .4 ? .4 : radius
+  radius = radius <= 1 ? radius : 1
+  g.selectAll(".dataPoint")
+    .attr("r", radius)
 }
 
 // If the drag behavior prevents the default click,
@@ -198,9 +206,21 @@ function brewMousemove(d) {
     .append("p")
       .attr("class", "breweryName")
       .text(d.name)
-    .append("p")
-      .attr("class", "breweryInfo")
-      .text(breweryRating.breweryRating)
+
+  if(breweryRating.breweryRating != "") {
+    breweryDiv
+      .append("div")
+        .attr("class", "breweryStats")
+        .append("div")
+          .attr("class", "breweryRating")
+          .append("p")
+            .text("Rating")
+          .append("p")
+            .attr("class", "bRNumber")
+            .text(breweryRating.breweryRating)
+  }
+
+  breweryDiv
     .append("p")
       .attr("class", "breweryInfo")
       .text(breweryRating.beerRating)
@@ -217,7 +237,7 @@ function brewMousemove(d) {
     var beers = beerDict[d.id]
     beers.forEach(function(entry) {
       breweryDiv.append("p")
-        .text(entry.name)
+        .text(entry.beerName)
     });
 }
 
@@ -230,6 +250,26 @@ function brewMouseout() {
   breweryDiv
     .style("opacity", 0)
 }
+
+//timeline filter
+$(function() {
+  $( "#slider-range" ).slider({
+    range: true,
+    min: 1786,
+    max: 2014,
+    values: [ 1786, 2014 ],
+    slide: function( event, ui ) {
+      $( "#year" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] )
+      d3.selectAll("circle").attr("visibility", function(d) {
+        if (d.yearOpened || ui.values[1] != 2014) {
+          return d.yearOpened >= ui.values[0] && d.yearOpened <= ui.values[1] ? "visible" : "hidden";
+        }
+      });
+    }
+  });
+  $( "#year" ).val( $( "#slider-range" ).slider( "values", 0 ) +
+    " - " + $( "#slider-range" ).slider( "values", 1 ) );
+});
 
 // put neccessary functions to setup project here
 
