@@ -8,17 +8,18 @@
 }
 
 .feature {
-  fill: #ccc;
+  fill: white;
   cursor: pointer;
+  stroke: grey;
 }
 
 .feature.active {
-  fill: orange;
+  fill: #eaeaea;
 }
 
 .mesh {
   fill: none;
-  stroke: #fff;
+  stroke: grey;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
