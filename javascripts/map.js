@@ -41,6 +41,14 @@ svg
   .call(zoom) // delete this line to disable free zooming
   .call(zoom.event);
 
+var div = d3.select(".map").append("div")
+  .attr("class", "brewDiv")
+  .style("opacity", 0)
+
+var breweryDiv = d3.select(".brewery-view").append("div")
+  .attr("class", "breweryDiv")
+  .style("opacity", 0)
+
 // map gets drawn here
 function drawMap() {
   d3.json("data/us.json", function(error, us) {
@@ -151,15 +159,6 @@ function clicked(d) {
       .call(zoom.translate(translate).scale(scale).event);
 }
 
-function reset() {
-  active.classed("active", false);
-  active = d3.select(null);
-
-  svg.transition()
-      .duration(750)
-      .call(zoom.translate([0, 0]).scale(1).event);
-}
-
 function zoomed() {
   g.style("stroke-width", 1.5 / d3.event.scale + "px");
   g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
@@ -177,13 +176,17 @@ function stopped() {
   if (d3.event.defaultPrevented) d3.event.stopPropagation();
 }
 
-var div = d3.select(".map").append("div")
-    .attr("class", "brewDiv")
+function reset() {
+  active.classed("active", false);
+  active = d3.select(null);
+
+  breweryDiv
     .style("opacity", 0)
 
-var breweryDiv = d3.select(".brewery-view").append("div")
-    .attr("class", "breweryDiv")
-    .style("opacity", 0)
+  svg.transition()
+      .duration(750)
+      .call(zoom.translate([0, 0]).scale(1).event);
+}
 
 function brewMouseover() {
   div
@@ -265,11 +268,11 @@ function showBrewData(d) {
     .append("p")
       .attr("class", "breweryInfo")
       .text(d.description)
-    console.log(beerDict)
+
     var beers = beerDict[d.id]
     beers.forEach(function(entry) {
       breweryDiv.append("p")
-        .text(entry.beerName)
+        .text(entry.beerName + "[" + entry.baRating + "]")
     });
 }
 
