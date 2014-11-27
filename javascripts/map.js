@@ -83,6 +83,7 @@ function drawMap() {
         .attr("class", "dataPoint")
         .on("mouseover", brewMouseover)
         .on("mouseout", brewMouseout)
+        .on("click", brewClick)
         .on("mousemove", brewMousemove);
 
     });
@@ -92,7 +93,7 @@ function drawMap() {
 
 // Load in the beer data using papaparse
 function loadBeerData() {
-  var beer = Papa.parse("data/beerList.csv", {
+  var beer = Papa.parse("data/beer.csv", {
     header: true,
     download: true,
     complete: function(results) {
@@ -190,16 +191,37 @@ function brewMouseover() {
     .duration(500)
     .style("opacity", 1)
 
-  breweryDiv
-    .style("opacity", 1)
+  // breweryDiv
+  //   .style("opacity", 1)
 }
 
 function brewMousemove(d) {
-  var breweryRating = breweryRatingDict[d.id]
+  showBrewDoD(d)
+}
+
+function brewMouseout() {
   div
-    .style("left", (d3.event.pageX) + "px")
-    .style("top", (d3.event.pageY) + "px")
-    .text(d.name)
+    .transition()
+    .duration(500)
+    .style("opacity", 0)
+}
+
+function brewClick(d) {
+  breweryDiv
+    .style("opacity", 1)
+  showBrewData(d)
+}
+
+function showBrewDoD(d) {
+  div
+  .style("left", (d3.event.pageX) + "px")
+  .style("top", (d3.event.pageY) + "px")
+  .text(d.name)
+}
+
+function showBrewData(d) {
+  var breweryRating = breweryRatingDict[d.id]
+  var overallRating = breweryRating.breweryRating
 
   breweryDiv
     .text("")
@@ -207,7 +229,7 @@ function brewMousemove(d) {
       .attr("class", "breweryName")
       .text(d.name)
 
-  if(breweryRating.breweryRating != "") {
+  if(overallRating != "") {
     breweryDiv
       .append("div")
         .attr("class", "breweryStats")
@@ -217,8 +239,18 @@ function brewMousemove(d) {
             .text("Rating")
           .append("p")
             .attr("class", "bRNumber")
-            .text(breweryRating.breweryRating)
+            .text(overallRating)
+
+    d3.select(".breweryStats")
+      .append("div")
+        .attr("class", "breweryBeerRating")
+        .append("p")
+          .text("Beer")
+        .append("p")
+          .attr("class", "bRNumber")
+          .text(breweryRating.beerRating)
   }
+
 
   breweryDiv
     .append("p")
@@ -233,22 +265,12 @@ function brewMousemove(d) {
     .append("p")
       .attr("class", "breweryInfo")
       .text(d.description)
-
+    console.log(beerDict)
     var beers = beerDict[d.id]
     beers.forEach(function(entry) {
       breweryDiv.append("p")
         .text(entry.beerName)
     });
-}
-
-function brewMouseout() {
-  div
-    .transition()
-    .duration(500)
-    .style("opacity", 0)
-
-  breweryDiv
-    .style("opacity", 0)
 }
 
 //timeline filter

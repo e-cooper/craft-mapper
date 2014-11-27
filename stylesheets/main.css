@@ -102,6 +102,7 @@ body {
   height: 50px;
   background-color: lightgrey;
   margin-top: 10px;
+  float: left;
 }
 
 .breweryRating p {
@@ -119,6 +120,7 @@ body {
   background-color: lightgrey;
   margin-top: 10px;
   margin-left: 5px;
+  float: left;
 }
 
 .breweryBeerRating p {
@@ -131,5 +133,5 @@ body {
 }
 
 .breweryStats {
-
+  margin-bottom: 100px;
 }
