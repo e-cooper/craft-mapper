@@ -89,6 +89,26 @@ function brushed() {
   d3.selectAll("circle").attr("visibility", function(d) {
     var brewery = breweryRatingDict[d.id];
     var rating = +brewery.breweryRating;
-    return (rating >= brush.extent()[0] && rating <= brush.extent()[1]) || brush.empty() ? "visible" : "hidden";
+    this.classList.remove("hiddenByRating");
+    if (brush.empty()) {
+      if (this.classList.contains("hiddenByYear")) {
+        return this.getAttribute("visibility");
+      }
+      else {
+        return "visible";
+      }
+    }
+    else {
+      if (this.classList.contains("hiddenByYear") && this.getAttribute("visibility") == "hidden") {
+        return this.getAttribute("visibility");
+      }
+      else if (rating >= brush.extent()[0] && rating <= brush.extent()[1]) {
+        return "visible";
+      }
+      else {
+        this.classList.add("hiddenByRating");
+        return "hidden";
+      }
+    }
   });
 }
