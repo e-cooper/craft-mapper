@@ -286,8 +286,19 @@ $(function() {
     slide: function( event, ui ) {
       $( "#year" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] )
       d3.selectAll("circle").attr("visibility", function(d) {
+        this.classList.remove("hiddenByYear");
         if (d.yearOpened || ui.values[1] != 2014) {
-          return d.yearOpened >= ui.values[0] && d.yearOpened <= ui.values[1] ? "visible" : "hidden";
+          var yearInBounds = d.yearOpened >= ui.values[0] && d.yearOpened <= ui.values[1];
+          if (this.classList.contains("hiddenByRating") && this.getAttribute("visibility") == "hidden") {
+            return this.getAttribute("visibility");
+          }
+          else if (yearInBounds) {
+            return "visible";
+          }
+          else {
+            this.classList.add("hiddenByYear");
+            return "hidden";
+          }
         }
       });
     }

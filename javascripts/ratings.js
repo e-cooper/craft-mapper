@@ -1,27 +1,22 @@
 // Rating chart code
 
-var binsize = 5;
-var minbin = 0;
+var binsize = 2;
+var minbin = 66;
 var maxbin = 100;
 var numbins = (maxbin - minbin) / binsize;
-var binmargin = .2;
+var binmargin = 2;
 
-var margin = {top: 10, right: 10, bottom: 100, left: 40},
-    margin2 = {top: 430, right: 10, bottom: 20, left: 40},
+var margin = {top: 30, right: 10, bottom: 20, left: 40},
     width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom,
-    height2 = 500 - margin2.top - margin2.bottom;
+    height = 300 - margin.top - margin.bottom;
 
 var x = d3.scale.linear().range([0, width]),
-    x2 = d3.scale.linear().range([0, width]),
-    y = d3.scale.linear().range([height, 0])
-    y2 = d3.scale.linear().range([height2, 0]);
+    y = d3.scale.linear().range([height, 0]);
 
-var xAxis = d3.svg.axis().scale(x).orient("bottom"),
-    xAxis2 = d3.svg.axis().scale(x2).orient("bottom");
+var xAxis = d3.svg.axis().scale(x).orient("bottom");
 
 var brush = d3.svg.brush()
-    .x(x2)
+    .x(x)
     .on("brush", brushed);
 
 var svg = d3.select(".ratings").append("svg")
@@ -34,29 +29,30 @@ svg.append("defs").append("clipPath")
     .attr("width", width)
     .attr("height", height);
 
-var focus = svg.append("g")
-    .attr("class", "focus")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 var context = svg.append("g")
     .attr("class", "context")
-    .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.csv("https://dl.dropboxusercontent.com/u/40727734/sp500.csv", function(error, data) {
+d3.csv("data/ratings.csv", function(error, data) {
 
-  var values = data.map(function(d) { return d.rating; });
+  var values = data.filter(function(d) { 
+    if (d.breweryRating) {
+      return d.breweryRating;
+    }
+  }).map(function(d) { return +d.breweryRating; });
 
-  x.domain([0, 100]);
-  x2.domain(x.domain());
+  x.domain([minbin, maxbin]);
 
   var hist = d3.layout.histogram()
+    .range(x.domain())
     .bins(numbins)
     (values);
 
   y.domain([0, d3.max(hist, function(d) { return d.y; })]);
-  y2.domain([0, d3.max(hist, function(d) { return d.y; })]);
 
-  var bar = focus.selectAll(".bar")
+  var barWidth = (x.range()[1] - x.range()[0]) / hist.length - binmargin;
+
+  var bar = context.selectAll(".bar")
     .data(hist)
   .enter().append("g")
     .attr("class", "bar")
@@ -66,30 +62,19 @@ d3.csv("https://dl.dropboxusercontent.com/u/40727734/sp500.csv", function(error,
 
   bar.append("rect")
       .attr("x", 1)
-      .attr("width", x(binsize - 2 * binmargin))
+      .attr("width", barWidth)
       .attr("height", function(d) { return height - y(d.y); });
 
-  focus.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
-
-  var bar2 = context.selectAll(".bar")
-    .data(hist)
-  .enter().append("g")
-    .attr("class", "bar")
-    .attr("transform", function(d, i) { 
-      return "translate(" + x2(i * binsize + minbin) + "," + y2(d.y) + ")"; 
-    });
-
-  bar2.append("rect")
-      .attr("x", 1)
-      .attr("width", x2(binsize - 2 * binmargin))
-      .attr("height", function(d) { return height2 - y2(d.y); });
+  bar.append("text")
+      .attr("dy", ".75em")
+      .attr("y", -10)
+      .attr("x", barWidth / 2)
+      .attr("text-anchor", "middle")
+      .text(function(d) { return d.y; });
 
   context.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + height2 + ")")
+      .attr("transform", "translate(0," + height + ")")
       .call(xAxis);
 
   context.append("g")
@@ -97,17 +82,33 @@ d3.csv("https://dl.dropboxusercontent.com/u/40727734/sp500.csv", function(error,
       .call(brush)
     .selectAll("rect")
       .attr("y", -6)
-      .attr("height", height2 + 7);
+      .attr("height", height + 7);
 });
 
 function brushed() {
-  x.domain(brush.empty() ? x2.domain() : brush.extent());
-  focus.selectAll(".bar")
-        .attr("transform", function(d, i) { 
-          return "translate(" + x(i * binsize + minbin) + "," + y(d.y) + ")"; 
-        });
-  // TODO: change width of bars on focus
-  // Can't seem to get this right, but since we'll be adapting it to the map
-  // there's not much of a point.
-  focus.select(".x.axis").call(xAxis);
+  d3.selectAll("circle").attr("visibility", function(d) {
+    var brewery = breweryRatingDict[d.id];
+    var rating = +brewery.breweryRating;
+    this.classList.remove("hiddenByRating");
+    if (brush.empty()) {
+      if (this.classList.contains("hiddenByYear")) {
+        return this.getAttribute("visibility");
+      }
+      else {
+        return "visible";
+      }
+    }
+    else {
+      if (this.classList.contains("hiddenByYear") && this.getAttribute("visibility") == "hidden") {
+        return this.getAttribute("visibility");
+      }
+      else if (rating >= brush.extent()[0] && rating <= brush.extent()[1]) {
+        return "visible";
+      }
+      else {
+        this.classList.add("hiddenByRating");
+        return "hidden";
+      }
+    }
+  });
 }
