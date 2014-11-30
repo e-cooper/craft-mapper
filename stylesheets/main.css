@@ -139,3 +139,7 @@ body {
 .breweryStats {
   margin-bottom: 100px;
 }
+
+#searchFilter {
+  width: 250px;
+}

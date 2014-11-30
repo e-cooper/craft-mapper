@@ -9,7 +9,8 @@ var width = 960,
     brewViewWidth = 300,
     brewViewHeight = 500,
     beerDict = {},
-    breweryRatingDict = {};
+    breweryRatingDict = {},
+    breweriesDict = {};
 
 var projection = d3.geo.albersUsa()
     .scale(1000)
@@ -86,7 +87,7 @@ function drawMap() {
         })
         .attr("r", 1)
         .attr("d", data)
-        .style("fill", "red")
+        .style("fill", "blue")
         .attr("opacity", .5)
         .attr("class", "dataPoint")
         .on("mouseover", brewMouseover)
@@ -137,7 +138,9 @@ function loadBreweryRatingData() {
 function breweryRatingCallback(data) {
   for(var i = 0; i < data.length; i++) {
     breweryRatingDict[data[i].breweryID] = data[i]
+    breweriesDict[data[i].name] = data[i].breweryID
   }
+  setupAutocomplete()
 }
 
 // Helper functions for map
@@ -305,6 +308,18 @@ $(function() {
   });
   $( "#year" ).val( $( "#slider-range" ).slider( "values", 0 ) +
     " - " + $( "#slider-range" ).slider( "values", 1 ) );
+});
+
+function setupAutocomplete() {
+  $('#searchFilter').autocomplete({
+    source: Object.keys(breweriesDict)
+  });
+}
+
+$('#searchFilter').keyup(function(event) {
+  if(event.keyCode == 13) {
+    console.log($(this).val());
+  }
 });
 
 // put neccessary functions to setup project here
