@@ -299,6 +299,11 @@ function showBrewData(d) {
     var beers = beerDict[d.id]
     var beerList = processBeers(beers)
     var length = beerList.length > 5 ? 5 : beerList.length
+
+    breweryDiv.append("div")
+      .attr("class", "beerRatingTitle")
+      .text("Top Beers")
+
     for (var i = 0; i < length; i++) {
       var entry = beerList[i]
       breweryDiv.append("div")

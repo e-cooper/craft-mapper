@@ -87,7 +87,8 @@ body {
 .breweryName {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
   font-weight: bold;
-  font-size: 15px;
+  font-size: 20px;
+  margin-bottom: 0;
 }
 
 .breweryInfo {
@@ -165,7 +166,6 @@ body {
 }
 
 .beerRatingView {
-  margin-bottom: 10px;
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 300;
   font-size: 15px;
@@ -206,4 +206,10 @@ body {
   font-size: 11px;
   margin-top: 0;
   font-weight: normal;
+}
+
+.beerRatingTitle {
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: -10px;
 }
