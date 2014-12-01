@@ -263,35 +263,38 @@ function showBrewData(d) {
       .attr("class", "breweryName")
       .text(d.name)
 
+  breweryDiv
+    .append("div")
+      .attr("class", "breweryStats")
+
   if(overallRating != "") {
-    breweryDiv
+    d3.select(".breweryStats")
       .append("div")
-        .attr("class", "breweryStats")
-        .append("div")
-          .attr("class", "breweryRating")
-          .append("p")
-            .text("Rating")
-          .append("p")
-            .attr("class", "bRNumber")
-            .text(overallRating)
+        .attr("class", "breweryRating")
+        .append("p")
+          .text("OVERALL")
+        .append("p")
+          .attr("class", "bRNumber")
+          .text(overallRating)
 
     d3.select(".breweryStats")
       .append("div")
         .attr("class", "breweryBeerRating")
         .append("p")
-          .text("Beer")
+          .text("BEER")
         .append("p")
           .attr("class", "bRNumber")
           .text(breweryRating.beerRating)
   }
 
-  breweryDiv
-    .append("p")
-      .attr("class", "breweryInfo")
-      .text(d.yearOpened)
-    .append("p")
-      .attr("class", "breweryInfo")
-      .text(d.website)
+  d3.select(".breweryStats")
+    .append("div")
+      .attr("class", "yearTitle")
+      .append("p")
+        .text("EST.")
+      .append("p")
+        .attr("class", "bRNumber")
+        .text(d.yearOpened)
 
     var beers = beerDict[d.id]
     var beerList = processBeers(beers)
@@ -301,17 +304,26 @@ function showBrewData(d) {
       breweryDiv.append("div")
         .attr("class", "beerRatingView beerRatingDiv-" + i )
 
+      var height = entry.name.length > 28 ? 70 : 50;
+
       d3.select(".beerRatingDiv-" + i)
         .append("div")
           .attr("class", "left")
+          .style("height", height + "px")
         .append("p")
+          .attr("class", "topBeer")
           .text(entry.name)
+        .append("p")
+          .text(entry.style)
 
       d3.select(".beerRatingDiv-" + i)
         .append("div")
           .attr("class", "right")
         .append("p")
+          .attr("class", "topBeer")
           .text(entry.rating)
+        .append("p")
+          .text(entry.beerRating)
 
       d3.select(".beerRatingDiv-" + i)
         .append("div")
