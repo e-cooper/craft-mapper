@@ -295,7 +295,6 @@ function showBrewData(d) {
 
     var beers = beerDict[d.id]
     var beerList = processBeers(beers)
-    console.log(beerList)
     var length = beerList.length > 5 ? 5 : beerList.length
     for (var i = 0; i < length; i++) {
       var entry = beerList[i]
@@ -307,16 +306,12 @@ function showBrewData(d) {
           .attr("class", "left")
         .append("p")
           .text(entry.name)
-        // .append("p")
-        //   .text(entry.style)
 
       d3.select(".beerRatingDiv-" + i)
         .append("div")
           .attr("class", "right")
         .append("p")
           .text(entry.rating)
-        // .append("p")
-        //   .text(entry.beerRating)
 
       d3.select(".beerRatingDiv-" + i)
         .append("div")
