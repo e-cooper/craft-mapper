@@ -139,3 +139,32 @@ body {
 .breweryStats {
   margin-bottom: 100px;
 }
+
+.beerRatingView {
+  margin-bottom: 10px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+  font-weight: 300;
+  font-size: 15px;
+}
+
+.beerRatingView p {
+  margin: none;
+}
+
+.beerRatingView .left {
+  float: left;
+  width: 200px;
+  height: 50px;
+}
+
+.beerRatingView .right {
+  float: right;
+  width: 50px;
+  height: 50px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.beerRatingView .clear {
+  clear: both;
+}
