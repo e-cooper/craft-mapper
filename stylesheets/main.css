@@ -14,9 +14,9 @@ body {
 }
 
 .feature {
-  fill: white;
+  fill: lightgrey;
   cursor: pointer;
-  stroke: grey;
+  stroke: white;
 }
 
 .feature.active {
@@ -25,7 +25,7 @@ body {
 
 .mesh {
   fill: none;
-  stroke: grey;
+  stroke: white;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
