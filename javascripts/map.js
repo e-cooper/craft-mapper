@@ -11,6 +11,10 @@ var width = 960,
     beerDict = {},
     breweryRatingDict = {},
     breweriesDict = {};
+    beerStyles = [],
+    beerRatingsDict = {},
+    beerRatingsHistogram = {},
+    beerInformationDict = {};
 
 var projection = d3.geo.albersUsa()
     .scale(1000)
@@ -90,6 +94,9 @@ function drawMap() {
         .style("fill", "blue")
         .attr("opacity", .5)
         .attr("class", "dataPoint")
+        .attr("id", function(d) {
+          return 'name' + d.id
+        })
         .on("mouseover", brewMouseover)
         .on("mouseout", brewMouseout)
         .on("click", brewClick)
@@ -114,13 +121,43 @@ function loadBeerData() {
 // add the beers for each brewery to the beerDict dictionary
 // for access later
 function beerCallback(data) {
+  // loop for getting the beer information
   for(var i = 0; i < data.length; i++) {
+    // logic for regular beer information
     var exists = beerDict[data[i].breweryID]
     var key = data[i].breweryID
     if (exists == null) {
       beerDict[key] = new Array()
     }
     beerDict[key].push(data[i])
+
+    // logic for style information
+    if (data[i].Style != "") {
+      beerStyles.push(data[i].Style)
+    }
+
+    // logic for beer rating
+    var rating = data[i].baRating
+    rating = parseInt(rating)
+
+    if (!isNaN(rating)) {
+      var ratingExists = beerRatingsDict[rating]
+      if (ratingExists == null) {
+        beerRatingsDict[rating] = new Array()
+      }
+      beerRatingsDict[rating].push(data[i])
+    }
+  }
+  beerStyles = _.uniq(beerStyles)
+  setupBeerRatingsHistogram()
+}
+
+function setupBeerRatingsHistogram() {
+  var ratingsKeys = Object.keys(beerRatingsDict)
+  for(var i = 0; i < ratingsKeys.length; i++) {
+    var key = ratingsKeys[i]
+    var size = beerRatingsDict[key].length
+    beerRatingsHistogram[key] = size
   }
 }
 
@@ -196,9 +233,6 @@ function brewMouseover() {
     .transition()
     .duration(500)
     .style("opacity", 1)
-
-  // breweryDiv
-  //   .style("opacity", 1)
 }
 
 function brewMousemove(d) {
@@ -216,6 +250,8 @@ function brewClick(d) {
   breweryDiv
     .style("opacity", 1)
   showBrewData(d)
+
+
 }
 
 function showBrewDoD(d) {
@@ -235,48 +271,169 @@ function showBrewData(d) {
       .attr("class", "breweryName")
       .text(d.name)
 
+  breweryDiv
+    .append("div")
+      .attr("class", "breweryStats")
+
   if(overallRating != "") {
-    breweryDiv
+    d3.select(".breweryStats")
       .append("div")
-        .attr("class", "breweryStats")
-        .append("div")
-          .attr("class", "breweryRating")
-          .append("p")
-            .text("Rating")
-          .append("p")
-            .attr("class", "bRNumber")
-            .text(overallRating)
+        .attr("class", "breweryRating")
+        .append("p")
+          .text("OVERALL")
+        .append("p")
+          .attr("class", "bRNumber")
+          .text(overallRating)
 
     d3.select(".breweryStats")
       .append("div")
         .attr("class", "breweryBeerRating")
         .append("p")
-          .text("Beer")
+          .text("BEER")
         .append("p")
           .attr("class", "bRNumber")
           .text(breweryRating.beerRating)
   }
 
-
-  breweryDiv
-    .append("p")
-      .attr("class", "breweryInfo")
-      .text(breweryRating.beerRating)
-    .append("p")
-      .attr("class", "breweryInfo")
-      .text(d.yearOpened)
-    .append("p")
-      .attr("class", "breweryInfo")
-      .text(d.website)
-    .append("p")
-      .attr("class", "breweryInfo")
-      .text(d.description)
+  d3.select(".breweryStats")
+    .append("div")
+      .attr("class", "yearTitle")
+      .append("p")
+        .text("EST.")
+      .append("p")
+        .attr("class", "bRNumber")
+        .text(d.yearOpened)
 
     var beers = beerDict[d.id]
-    beers.forEach(function(entry) {
-      breweryDiv.append("p")
-        .text(entry.beerName + "[" + entry.baRating + "]")
+    var beerList = processBeers(beers)
+    var length = beerList.length > 5 ? 5 : beerList.length
+
+    breweryDiv.append("div")
+      .attr("class", "totalBeerChart")
+      .text("Beer Distribution")
+
+    createBeerHistogram(beerList)
+
+    breweryDiv.append("div")
+      .attr("class", "beerRatingTitle")
+      .text("Top Beers")
+
+    for (var i = 0; i < length; i++) {
+      var entry = beerList[i]
+      breweryDiv.append("div")
+        .attr("class", "beerRatingView beerRatingDiv-" + i )
+
+      var height = entry.name.length > 28 ? 70 : 50;
+
+      d3.select(".beerRatingDiv-" + i)
+        .append("div")
+          .attr("class", "left")
+          .style("height", height + "px")
+        .append("p")
+          .attr("class", "topBeer")
+          .text(entry.name)
+        .append("p")
+          .text(entry.style)
+
+      d3.select(".beerRatingDiv-" + i)
+        .append("div")
+          .attr("class", "right")
+        .append("p")
+          .attr("class", "topBeer")
+          .text(entry.rating)
+        .append("p")
+          .text(entry.beerRating)
+
+      d3.select(".beerRatingDiv-" + i)
+        .append("div")
+          .attr("class", "clear")
+    }
+}
+
+function createBeerHistogram(beerList) {
+  var dataset = createBeerHistogramData(beerList)
+
+  var cWidth = 300,
+      cHeight = 75,
+      barPadding = 1;
+
+  var svg = d3.select('.totalBeerChart')
+      .append("svg")
+      .attr("width", cWidth)
+      .attr("height", cHeight)
+
+  // http://alignedleft.com/tutorials/d3/making-a-bar-chart
+  svg.selectAll("rect")
+    .data(dataset)
+    .enter()
+    .append("rect")
+    .attr("x", function(d, i) {
+      return i * (cWidth / dataset.length);
+    })
+    .attr("y", function(d) {
+      return cHeight - d.number*4
+    })
+    .attr("width", cWidth / dataset.length - barPadding)
+    .attr("height", function(d){
+      return d.number * 4;
     });
+
+  var h = cHeight / dataset.length - barPadding;
+
+  // svg.selectAll("text")
+  //   .data(dataset)
+  //   .enter()
+  //   .append("text")
+  //   .text(function(d) {
+  //     return d.level
+  //   })
+  //   .attr("x", function(d) {
+  //     return 0
+  //   })
+  //   .attr("y", function(d, i) {
+  //     return (i * (cHeight / dataset.length)) + h/2
+  //   });
+
+
+}
+
+// return an array with the number of points at each rating
+function createBeerHistogramData(beerList) {
+  var data = {"world-class": 0, "outstanding": 0,
+    "very good": 0, "good": 0, "okay": 0,
+    "poor": 0, "awful": 0}
+  for (var i = 0; i < beerList.length; i++) {
+    var entry = beerList[i]
+    if(entry.beerRating != "") {
+      data[entry.beerRating] += 1
+    }
+  }
+
+  var order = {"world-class": 1, "outstanding": 2,
+    "very good": 3, "good": 4, "okay": 5,
+    "poor": 6, "awful": 7}
+
+  var bigList = []
+  var keys = Object.keys(data)
+  for (var i = 0; i < keys.length; i++) {
+    var level = keys[i]
+    var num = data[level]
+    var ordering = order[level]
+    bigList.push({"level": level, "number": num, "order": ordering})
+  }
+  return bigList
+}
+
+function processBeers(beer) {
+  var firstList = []
+  for (var i = 0; i < beer.length; i++) {
+    var num = parseInt(beer[i].baRating)
+    if (!isNaN(num)) {
+      firstList.push({"name": beer[i].beerName, "rating": num,
+        "beerRating": beer[i].beerRating, "style": beer[i].Style})
+    }
+  }
+  return _.sortBy(firstList, "rating").reverse()
 }
 
 //timeline filter
@@ -310,6 +467,14 @@ $(function() {
     " - " + $( "#slider-range" ).slider( "values", 1 ) );
 });
 
+// Search functionality
+function selectBrewery(id) {
+  var node = d3.select('#name'+id)
+  if (node != null) {
+    brewClick(node.data()[0])
+  }
+}
+
 function setupAutocomplete() {
   $('#searchFilter').autocomplete({
     source: Object.keys(breweriesDict)
@@ -318,7 +483,12 @@ function setupAutocomplete() {
 
 $('#searchFilter').keyup(function(event) {
   if(event.keyCode == 13) {
-    console.log($(this).val());
+    var pressed = $(this).val()
+    console.log(pressed)
+    var id = breweriesDict[pressed]
+    if (id != null) {
+      selectBrewery(id)
+    }
   }
 });
 
