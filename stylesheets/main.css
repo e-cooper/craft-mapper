@@ -85,10 +85,11 @@ body {
 }
 
 .breweryName {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: bold;
   font-size: 20px;
   margin-bottom: 0;
+  margin-top: 0;
 }
 
 .breweryInfo {
@@ -149,6 +150,15 @@ body {
 
 .breweryStats {
   height: 60px;
+}
+
+.search {
+  margin-top: 15px;
+}
+
+#searchFilter {
+  width: 250px;
+  height: 15px;
 }
 
 .bRNumber {

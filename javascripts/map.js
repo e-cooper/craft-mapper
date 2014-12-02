@@ -10,6 +10,7 @@ var width = 960,
     brewViewHeight = 500,
     beerDict = {},
     breweryRatingDict = {},
+    breweriesDict = {};
     beerStyles = [],
     beerRatingsDict = {},
     beerRatingsHistogram = {},
@@ -93,6 +94,9 @@ function drawMap() {
         .style("fill", "blue")
         .attr("opacity", .5)
         .attr("class", "dataPoint")
+        .attr("id", function(d) {
+          return 'name' + d.id
+        })
         .on("mouseover", brewMouseover)
         .on("mouseout", brewMouseout)
         .on("click", brewClick)
@@ -171,7 +175,9 @@ function loadBreweryRatingData() {
 function breweryRatingCallback(data) {
   for(var i = 0; i < data.length; i++) {
     breweryRatingDict[data[i].breweryID] = data[i]
+    breweriesDict[data[i].name] = data[i].breweryID
   }
+  setupAutocomplete()
 }
 
 // Helper functions for map
@@ -244,6 +250,32 @@ function brewClick(d) {
   breweryDiv
     .style("opacity", 1)
   showBrewData(d)
+  handleTransform(d)
+}
+
+function handleTransform(d) {
+
+  active.classed("active", false);
+  active = d3.select(null);
+
+  longitude = parseFloat(d.longitude);
+  latitude = parseFloat(d.latitude);
+  var cy, cx;
+  if (!isNaN(longitude) && !isNaN(latitude)) {
+    cx = projection([d.longitude, d.latitude])[0];
+  }
+
+  if (!isNaN(longitude) && !isNaN(latitude)) {
+    cy = projection([d.longitude, d.latitude])[1];
+  }
+
+  scale = .04 / Math.max(1 / width, 1 / height),
+  translate = [width / 2 - scale * cx, height / 2 - scale * cy];
+
+  // TODO make this dynamic based off of distance?
+  svg.transition()
+    .duration(5000)
+    .call(zoom.translate(translate).scale(scale).event);
 }
 
 function showBrewDoD(d) {
@@ -363,7 +395,7 @@ function createBeerHistogram(beerList) {
       return i * (cWidth / dataset.length);
     })
     .attr("y", function(d) {
-      return cHeight - d.number*4
+      return cHeight - (d.number * 4)
     })
     .attr("width", cWidth / dataset.length - barPadding)
     .attr("height", function(d){
@@ -372,19 +404,21 @@ function createBeerHistogram(beerList) {
 
   var h = cHeight / dataset.length - barPadding;
 
-  // svg.selectAll("text")
-  //   .data(dataset)
-  //   .enter()
-  //   .append("text")
-  //   .text(function(d) {
-  //     return d.level
-  //   })
-  //   .attr("x", function(d) {
-  //     return 0
-  //   })
-  //   .attr("y", function(d, i) {
-  //     return (i * (cHeight / dataset.length)) + h/2
-  //   });
+  svg.selectAll("text")
+    .data(dataset)
+    .enter()
+    .append("text")
+    .text(function(d) {
+      return d.number
+    })
+    .attr("x", function(d, i) {
+      return i * (cWidth / dataset.length) + 14
+    })
+    .attr("y", function(d) {
+      return cHeight - (d.number * 4) - 2
+    })
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "12px");
 
 
 }
@@ -396,7 +430,9 @@ function createBeerHistogramData(beerList) {
     "poor": 0, "awful": 0}
   for (var i = 0; i < beerList.length; i++) {
     var entry = beerList[i]
-    data[entry.beerRating] += 1
+    if(entry.beerRating != "") {
+      data[entry.beerRating] += 1
+    }
   }
 
   var order = {"world-class": 1, "outstanding": 2,
@@ -410,9 +446,7 @@ function createBeerHistogramData(beerList) {
     var num = data[level]
     var ordering = order[level]
     bigList.push({"level": level, "number": num, "order": ordering})
-
   }
-  console.log(bigList)
   return bigList
 }
 
@@ -457,6 +491,30 @@ $(function() {
   });
   $( "#year" ).val( $( "#slider-range" ).slider( "values", 0 ) +
     " - " + $( "#slider-range" ).slider( "values", 1 ) );
+});
+
+// Search functionality
+function selectBrewery(id) {
+  var node = d3.select('#name'+id)
+  if (node != null) {
+    brewClick(node.data()[0])
+  }
+}
+
+function setupAutocomplete() {
+  $('#searchFilter').autocomplete({
+    source: Object.keys(breweriesDict)
+  });
+}
+
+$('#searchFilter').keyup(function(event) {
+  if(event.keyCode == 13) {
+    var pressed = $(this).val()
+    var id = breweriesDict[pressed]
+    if (id != null) {
+      selectBrewery(id)
+    }
+  }
 });
 
 // put neccessary functions to setup project here
