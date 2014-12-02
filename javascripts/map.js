@@ -345,7 +345,7 @@ function createBeerHistogram(beerList) {
   var dataset = createBeerHistogramData(beerList)
 
   var cWidth = 300,
-      cHeight = 150,
+      cHeight = 75,
       barPadding = 1;
 
   var svg = d3.select('.totalBeerChart')
@@ -358,32 +358,48 @@ function createBeerHistogram(beerList) {
     .data(dataset)
     .enter()
     .append("rect")
-    .attr("x", function(d) {
-      return 0;
+    .attr("x", function(d, i) {
+      return i * (cWidth / dataset.length);
     })
-    .attr("y", function(d, i) {
-      return i * (cHeight / dataset.length);
+    .attr("y", function(d) {
+      return cHeight - d.number*4
     })
-    .attr("width", function(d) {
+    .attr("width", cWidth / dataset.length - barPadding)
+    .attr("height", function(d){
       return d.number * 4;
-    })
-    .attr("height", cHeight / dataset.length - barPadding);
+    });
+
+  // Horizontal
+  // svg.selectAll("rect")
+  //   .data(dataset)
+  //   .enter()
+  //   .append("rect")
+  //   .attr("x", function(d) {
+  //     return 75;
+  //   })
+  //   .attr("y", function(d, i) {
+  //     return i * (cHeight / dataset.length);
+  //   })
+  //   .attr("width", function(d) {
+  //     return d.number * 4;
+  //   })
+  //   .attr("height", cHeight / dataset.length - barPadding);
 
   var h = cHeight / dataset.length - barPadding;
 
-  svg.selectAll("text")
-    .data(dataset)
-    .enter()
-    .append("text")
-    .text(function(d) {
-      return d.level
-    })
-    .attr("x", function(d) {
-      return cWidth - (d.level.length * 6)
-    })
-    .attr("y", function(d, i) {
-      return (i * (cHeight / dataset.length)) + h/2;
-    });
+  // svg.selectAll("text")
+  //   .data(dataset)
+  //   .enter()
+  //   .append("text")
+  //   .text(function(d) {
+  //     return d.level
+  //   })
+  //   .attr("x", function(d) {
+  //     return 0
+  //   })
+  //   .attr("y", function(d, i) {
+  //     return (i * (cHeight / dataset.length)) + h/2
+  //   });
 
 
 }

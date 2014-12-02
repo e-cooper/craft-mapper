@@ -148,7 +148,7 @@ body {
 }
 
 .breweryStats {
-  margin-bottom: 75px;
+
 }
 
 .bRNumber {
@@ -216,5 +216,5 @@ body {
 
 .totalBeerChart {
   width: 300px;
-  height: 150px;
+  margin-bottom: 15px;
 }
