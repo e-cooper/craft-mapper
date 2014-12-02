@@ -48,7 +48,7 @@ body {
 }
 
 .bar rect {
-  fill: steelblue;
+  fill: black;
   shape-rendering: crispEdges;
 }
 
