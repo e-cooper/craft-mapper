@@ -251,7 +251,27 @@ function brewClick(d) {
     .style("opacity", 1)
   showBrewData(d)
 
+  active.classed("active", false);
+  active = d3.select(null);
 
+  longitude = parseFloat(d.longitude);
+  latitude = parseFloat(d.latitude);
+  var cy, cx;
+  if (!isNaN(longitude) && !isNaN(latitude)) {
+    cx = projection([d.longitude, d.latitude])[0];
+  }
+
+  if (!isNaN(longitude) && !isNaN(latitude)) {
+    cy = projection([d.longitude, d.latitude])[1];
+  }
+
+  scale = .1 / Math.max(1 / width, 1 / height),
+  translate = [width / 2 - scale * cx, height / 2 - scale * cy];
+
+  // TODO make this dynamic based off of distance?
+  svg.transition()
+    .duration(5000)
+    .call(zoom.translate(translate).scale(scale).event);
 }
 
 function showBrewDoD(d) {
@@ -484,7 +504,6 @@ function setupAutocomplete() {
 $('#searchFilter').keyup(function(event) {
   if(event.keyCode == 13) {
     var pressed = $(this).val()
-    console.log(pressed)
     var id = breweriesDict[pressed]
     if (id != null) {
       selectBrewery(id)
