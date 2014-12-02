@@ -263,60 +263,157 @@ function showBrewData(d) {
       .attr("class", "breweryName")
       .text(d.name)
 
+  breweryDiv
+    .append("div")
+      .attr("class", "breweryStats")
+
   if(overallRating != "") {
-    breweryDiv
+    d3.select(".breweryStats")
       .append("div")
-        .attr("class", "breweryStats")
-        .append("div")
-          .attr("class", "breweryRating")
-          .append("p")
-            .text("Rating")
-          .append("p")
-            .attr("class", "bRNumber")
-            .text(overallRating)
+        .attr("class", "breweryRating")
+        .append("p")
+          .text("OVERALL")
+        .append("p")
+          .attr("class", "bRNumber")
+          .text(overallRating)
 
     d3.select(".breweryStats")
       .append("div")
         .attr("class", "breweryBeerRating")
         .append("p")
-          .text("Beer")
+          .text("BEER")
         .append("p")
           .attr("class", "bRNumber")
           .text(breweryRating.beerRating)
   }
 
-  breweryDiv
-    .append("p")
-      .attr("class", "breweryInfo")
-      .text(d.yearOpened)
-    .append("p")
-      .attr("class", "breweryInfo")
-      .text(d.website)
+  d3.select(".breweryStats")
+    .append("div")
+      .attr("class", "yearTitle")
+      .append("p")
+        .text("EST.")
+      .append("p")
+        .attr("class", "bRNumber")
+        .text(d.yearOpened)
 
     var beers = beerDict[d.id]
     var beerList = processBeers(beers)
     var length = beerList.length > 5 ? 5 : beerList.length
+
+    breweryDiv.append("div")
+      .attr("class", "totalBeerChart")
+      .text("Beer Distribution")
+
+    createBeerHistogram(beerList)
+
+    breweryDiv.append("div")
+      .attr("class", "beerRatingTitle")
+      .text("Top Beers")
+
     for (var i = 0; i < length; i++) {
       var entry = beerList[i]
       breweryDiv.append("div")
         .attr("class", "beerRatingView beerRatingDiv-" + i )
 
+      var height = entry.name.length > 28 ? 70 : 50;
+
       d3.select(".beerRatingDiv-" + i)
         .append("div")
           .attr("class", "left")
+          .style("height", height + "px")
         .append("p")
+          .attr("class", "topBeer")
           .text(entry.name)
+        .append("p")
+          .text(entry.style)
 
       d3.select(".beerRatingDiv-" + i)
         .append("div")
           .attr("class", "right")
         .append("p")
+          .attr("class", "topBeer")
           .text(entry.rating)
+        .append("p")
+          .text(entry.beerRating)
 
       d3.select(".beerRatingDiv-" + i)
         .append("div")
           .attr("class", "clear")
     }
+}
+
+function createBeerHistogram(beerList) {
+  var dataset = createBeerHistogramData(beerList)
+
+  var cWidth = 300,
+      cHeight = 75,
+      barPadding = 1;
+
+  var svg = d3.select('.totalBeerChart')
+      .append("svg")
+      .attr("width", cWidth)
+      .attr("height", cHeight)
+
+  // http://alignedleft.com/tutorials/d3/making-a-bar-chart
+  svg.selectAll("rect")
+    .data(dataset)
+    .enter()
+    .append("rect")
+    .attr("x", function(d, i) {
+      return i * (cWidth / dataset.length);
+    })
+    .attr("y", function(d) {
+      return cHeight - d.number*4
+    })
+    .attr("width", cWidth / dataset.length - barPadding)
+    .attr("height", function(d){
+      return d.number * 4;
+    });
+
+  var h = cHeight / dataset.length - barPadding;
+
+  // svg.selectAll("text")
+  //   .data(dataset)
+  //   .enter()
+  //   .append("text")
+  //   .text(function(d) {
+  //     return d.level
+  //   })
+  //   .attr("x", function(d) {
+  //     return 0
+  //   })
+  //   .attr("y", function(d, i) {
+  //     return (i * (cHeight / dataset.length)) + h/2
+  //   });
+
+
+}
+
+// return an array with the number of points at each rating
+function createBeerHistogramData(beerList) {
+  var data = {"world-class": 0, "outstanding": 0,
+    "very good": 0, "good": 0, "okay": 0,
+    "poor": 0, "awful": 0}
+  for (var i = 0; i < beerList.length; i++) {
+    var entry = beerList[i]
+    data[entry.beerRating] += 1
+  }
+
+  var order = {"world-class": 1, "outstanding": 2,
+    "very good": 3, "good": 4, "okay": 5,
+    "poor": 6, "awful": 7}
+
+  var bigList = []
+  var keys = Object.keys(data)
+  for (var i = 0; i < keys.length; i++) {
+    var level = keys[i]
+    var num = data[level]
+    var ordering = order[level]
+    bigList.push({"level": level, "number": num, "order": ordering})
+
+  }
+  console.log(bigList)
+  return bigList
 }
 
 function processBeers(beer) {

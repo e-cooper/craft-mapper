@@ -7,11 +7,11 @@ var numbins = (maxbin - minbin) / binsize;
 var binmargin = 2;
 
 var margin = {top: 30, right: 10, bottom: 20, left: 40},
-    width = 960 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom;
+    ratingWidth = 960 - margin.left - margin.right,
+    ratingHeight = 150 - margin.top - margin.bottom;
 
-var x = d3.scale.linear().range([0, width]),
-    y = d3.scale.linear().range([height, 0]);
+var x = d3.scale.linear().range([0, ratingWidth]),
+    y = d3.scale.linear().range([ratingHeight, 0]);
 
 var xAxis = d3.svg.axis().scale(x).orient("bottom");
 
@@ -20,14 +20,14 @@ var brush = d3.svg.brush()
     .on("brush", brushed);
 
 var svg = d3.select(".ratings").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);
+    .attr("width", ratingWidth + margin.left + margin.right)
+    .attr("ratingHeight", ratingHeight + margin.top + margin.bottom);
 
 svg.append("defs").append("clipPath")
     .attr("id", "clip")
   .append("rect")
-    .attr("width", width)
-    .attr("height", height);
+    .attr("width", ratingWidth)
+    .attr("height", ratingHeight);
 
 var context = svg.append("g")
     .attr("class", "context")
@@ -63,7 +63,7 @@ d3.csv("data/ratings.csv", function(error, data) {
   bar.append("rect")
       .attr("x", 1)
       .attr("width", barWidth)
-      .attr("height", function(d) { return height - y(d.y); });
+      .attr("height", function(d) { return ratingHeight - y(d.y); });
 
   bar.append("text")
       .attr("dy", ".75em")
@@ -74,7 +74,7 @@ d3.csv("data/ratings.csv", function(error, data) {
 
   context.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
+      .attr("transform", "translate(0," + ratingHeight + ")")
       .call(xAxis);
 
   context.append("g")
@@ -82,7 +82,7 @@ d3.csv("data/ratings.csv", function(error, data) {
       .call(brush)
     .selectAll("rect")
       .attr("y", -6)
-      .attr("height", height + 7);
+      .attr("height", ratingHeight + 7);
 });
 
 function brushed() {

@@ -1,5 +1,11 @@
 /* Main CSS file for page styling */
 
+body {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 300;
+}
+
+
 /* CSS from  http://bl.ocks.org/mbostock/9656675 */
 
 .background {
@@ -81,7 +87,8 @@ body {
 .breweryName {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
   font-weight: bold;
-  font-size: 15px;
+  font-size: 20px;
+  margin-bottom: 0;
 }
 
 .breweryInfo {
@@ -101,10 +108,15 @@ body {
 .bar text {
   fill: #000;
 }
+
+.breweryStats div {
+  float: left;
+  margin-right: 10px;
+}
+
 .breweryRating {
   width: 50px;
   height: 50px;
-  background-color: lightgrey;
   margin-top: 10px;
   float: left;
 }
@@ -121,7 +133,6 @@ body {
 .breweryBeerRating {
   width: 50px;
   height: 50px;
-  background-color: lightgrey;
   margin-top: 10px;
   margin-left: 5px;
   float: left;
@@ -137,14 +148,30 @@ body {
 }
 
 .breweryStats {
-  margin-bottom: 100px;
+  height: 60px;
+}
+
+.bRNumber {
+  font-size: 25px;
+}
+
+.yearTitle {
+  text-align: center;
+  height: 50px;
+  margin-top: 10px;
+}
+
+.yearTitle p {
+  margin: 0;
 }
 
 .beerRatingView {
-  margin-bottom: 10px;
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 300;
   font-size: 15px;
+  border-bottom: 1px solid black;
+  height: 70px;
+  position: relative;
 }
 
 .beerRatingView p {
@@ -154,17 +181,42 @@ body {
 .beerRatingView .left {
   float: left;
   width: 200px;
-  height: 50px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 
 .beerRatingView .right {
   float: right;
-  width: 50px;
   height: 50px;
   font-weight: bold;
   text-align: center;
+  font-size: 30px;
 }
 
 .beerRatingView .clear {
   clear: both;
+}
+
+.topBeer {
+  margin-top: 16px;
+}
+
+.topBeer p {
+  font-size: 11px;
+  margin-top: 0;
+  font-weight: normal;
+}
+
+.beerRatingTitle {
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: -10px;
+}
+
+.totalBeerChart {
+  width: 300px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-size: 15px;
 }
