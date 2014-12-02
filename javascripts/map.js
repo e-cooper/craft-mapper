@@ -250,6 +250,10 @@ function brewClick(d) {
   breweryDiv
     .style("opacity", 1)
   showBrewData(d)
+  handleTransform(d)
+}
+
+function handleTransform(d) {
 
   active.classed("active", false);
   active = d3.select(null);
@@ -265,7 +269,7 @@ function brewClick(d) {
     cy = projection([d.longitude, d.latitude])[1];
   }
 
-  scale = .1 / Math.max(1 / width, 1 / height),
+  scale = .04 / Math.max(1 / width, 1 / height),
   translate = [width / 2 - scale * cx, height / 2 - scale * cy];
 
   // TODO make this dynamic based off of distance?
@@ -391,7 +395,7 @@ function createBeerHistogram(beerList) {
       return i * (cWidth / dataset.length);
     })
     .attr("y", function(d) {
-      return cHeight - d.number*4
+      return cHeight - (d.number * 4)
     })
     .attr("width", cWidth / dataset.length - barPadding)
     .attr("height", function(d){
@@ -400,19 +404,21 @@ function createBeerHistogram(beerList) {
 
   var h = cHeight / dataset.length - barPadding;
 
-  // svg.selectAll("text")
-  //   .data(dataset)
-  //   .enter()
-  //   .append("text")
-  //   .text(function(d) {
-  //     return d.level
-  //   })
-  //   .attr("x", function(d) {
-  //     return 0
-  //   })
-  //   .attr("y", function(d, i) {
-  //     return (i * (cHeight / dataset.length)) + h/2
-  //   });
+  svg.selectAll("text")
+    .data(dataset)
+    .enter()
+    .append("text")
+    .text(function(d) {
+      return d.number
+    })
+    .attr("x", function(d, i) {
+      return i * (cWidth / dataset.length) + 14
+    })
+    .attr("y", function(d) {
+      return cHeight - (d.number * 4) - 2
+    })
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "12px");
 
 
 }
