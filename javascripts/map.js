@@ -302,6 +302,7 @@ function showBrewData(d) {
 
     breweryDiv.append("div")
       .attr("class", "totalBeerChart")
+      .text("Beer Distribution")
 
     createBeerHistogram(beerList)
 
@@ -368,22 +369,6 @@ function createBeerHistogram(beerList) {
     .attr("height", function(d){
       return d.number * 4;
     });
-
-  // Horizontal
-  // svg.selectAll("rect")
-  //   .data(dataset)
-  //   .enter()
-  //   .append("rect")
-  //   .attr("x", function(d) {
-  //     return 75;
-  //   })
-  //   .attr("y", function(d, i) {
-  //     return i * (cHeight / dataset.length);
-  //   })
-  //   .attr("width", function(d) {
-  //     return d.number * 4;
-  //   })
-  //   .attr("height", cHeight / dataset.length - barPadding);
 
   var h = cHeight / dataset.length - barPadding;
 
