@@ -213,3 +213,8 @@ body {
   font-size: 15px;
   margin-bottom: -10px;
 }
+
+.totalBeerChart {
+  width: 300px;
+  height: 150px;
+}

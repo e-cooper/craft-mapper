@@ -301,6 +301,11 @@ function showBrewData(d) {
     var length = beerList.length > 5 ? 5 : beerList.length
 
     breweryDiv.append("div")
+      .attr("class", "totalBeerChart")
+
+    createBeerHistogram(beerList)
+
+    breweryDiv.append("div")
       .attr("class", "beerRatingTitle")
       .text("Top Beers")
 
@@ -334,6 +339,80 @@ function showBrewData(d) {
         .append("div")
           .attr("class", "clear")
     }
+}
+
+function createBeerHistogram(beerList) {
+  var dataset = createBeerHistogramData(beerList)
+
+  var cWidth = 300,
+      cHeight = 150,
+      barPadding = 1;
+
+  var svg = d3.select('.totalBeerChart')
+      .append("svg")
+      .attr("width", cWidth)
+      .attr("height", cHeight)
+
+  // http://alignedleft.com/tutorials/d3/making-a-bar-chart
+  svg.selectAll("rect")
+    .data(dataset)
+    .enter()
+    .append("rect")
+    .attr("x", function(d) {
+      return 0;
+    })
+    .attr("y", function(d, i) {
+      return i * (cHeight / dataset.length);
+    })
+    .attr("width", function(d) {
+      return d.number * 4;
+    })
+    .attr("height", cHeight / dataset.length - barPadding);
+
+  var h = cHeight / dataset.length - barPadding;
+
+  svg.selectAll("text")
+    .data(dataset)
+    .enter()
+    .append("text")
+    .text(function(d) {
+      return d.level
+    })
+    .attr("x", function(d) {
+      return cWidth - (d.level.length * 6)
+    })
+    .attr("y", function(d, i) {
+      return (i * (cHeight / dataset.length)) + h/2;
+    });
+
+
+}
+
+// return an array with the number of points at each rating
+function createBeerHistogramData(beerList) {
+  var data = {"world-class": 0, "outstanding": 0,
+    "very good": 0, "good": 0, "okay": 0,
+    "poor": 0, "awful": 0}
+  for (var i = 0; i < beerList.length; i++) {
+    var entry = beerList[i]
+    data[entry.beerRating] += 1
+  }
+
+  var order = {"world-class": 1, "outstanding": 2,
+    "very good": 3, "good": 4, "okay": 5,
+    "poor": 6, "awful": 7}
+
+  var bigList = []
+  var keys = Object.keys(data)
+  for (var i = 0; i < keys.length; i++) {
+    var level = keys[i]
+    var num = data[level]
+    var ordering = order[level]
+    bigList.push({"level": level, "number": num, "order": ordering})
+
+  }
+  console.log(bigList)
+  return bigList
 }
 
 function processBeers(beer) {
