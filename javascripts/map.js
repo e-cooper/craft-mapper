@@ -14,7 +14,8 @@ var width = 960,
     beerStyles = [],
     beerRatingsDict = {},
     beerRatingsHistogram = {},
-    beerInformationDict = {};
+    beerInformationDict = {}
+    sideDiv = null;
 
 var projection = d3.geo.albersUsa()
     .scale(1000)
@@ -400,7 +401,10 @@ function createBeerHistogram(beerList) {
     .attr("width", cWidth / dataset.length - barPadding)
     .attr("height", function(d){
       return d.number * 4;
-    });
+    })
+    .on("mouseover", sideMouseover)
+    .on("mousemove", sideMousemove)
+    .on("mouseout", sideMouseout);
 
   var h = cHeight / dataset.length - barPadding;
 
@@ -420,7 +424,35 @@ function createBeerHistogram(beerList) {
     .attr("font-family", "sans-serif")
     .attr("font-size", "12px");
 
+  sideDiv = d3.select(".totalBeerChart")
+    .append("div")
+    .attr("class", "sideDiv")
+    .style("opacity", 0)
+}
 
+function sideMouseover() {
+  sideDiv
+    .transition()
+    .duration(500)
+    .style("opacity", 1)
+}
+
+function sideMousemove(d) {
+  showSideDoD(d)
+}
+
+function sideMouseout() {
+  sideDiv
+    .transition()
+    .duration(500)
+    .style("opacity", 0)
+}
+
+function showSideDoD(d) {
+  sideDiv
+    .style("left", (d3.event.pageX) + "px")
+    .style("top", (d3.event.pageY) + "px")
+    .text(d.level)
 }
 
 // return an array with the number of points at each rating
@@ -435,9 +467,9 @@ function createBeerHistogramData(beerList) {
     }
   }
 
-  var order = {"world-class": 1, "outstanding": 2,
-    "very good": 3, "good": 4, "okay": 5,
-    "poor": 6, "awful": 7}
+  var order = {"world-class": 7, "outstanding": 6,
+    "very good": 5, "good": 4, "okay": 3,
+    "poor": 2, "awful": 1}
 
   var bigList = []
   var keys = Object.keys(data)
@@ -447,7 +479,8 @@ function createBeerHistogramData(beerList) {
     var ordering = order[level]
     bigList.push({"level": level, "number": num, "order": ordering})
   }
-  return bigList
+
+  return _.sortBy(bigList, "order")
 }
 
 function processBeers(beer) {
