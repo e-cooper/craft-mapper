@@ -569,37 +569,25 @@ $(function() {
 function animateTimeline() {
   var min = 1786;
   var max = 2014;
-  /*while (min <=max) {
-	d3.selectAll("circle").attr("visibility", function(d) {
-	  if(d.yearOpened <= min) {
-		return "visible";
-	  }
-	  else {
-	    return "hidden";
-	  }
-	});
-	min = min + 1;
-  }*/
   var counter = min;
-  console.log("Button pressed");
   var intervalId = setInterval(function(){
-	(function(max) {
-		if(counter <= max) {
-			d3.selectAll("circle").attr("visibility", function(d) {
-				if(d.yearOpened <= counter) {
-					return "visible";
-				} else {
-					return "hidden";
-				}
-			});
-			var displacement = ((counter - min) / max)*1000;
-			document.getElementById("animation-progress").style.width = displacement + "%";
-			document.getElementById("animateYear").value = counter;
-
-			counter += 1;
-		} else {
-			clearInterval(intervalId);
-		}
+    (function(max) {
+	  if(counter <= max) {
+		d3.selectAll("circle").attr("visibility", function(d) {
+		  if(d.yearOpened <= counter) {
+			return "visible";
+		  } else {
+			return "hidden";
+		  }
+		});
+		var displacement = ((counter - min) / 228)*100;
+		document.getElementById("animation-progress").style.width = displacement + "%";
+		document.getElementById("animateYear").value = counter;
+		counter += 1;
+	  } else {
+		clearInterval(intervalId);
+		document.getElementById("animateYear").value = "Animate Map";
+	  }
 	})(max);
   }, 100);
 }
