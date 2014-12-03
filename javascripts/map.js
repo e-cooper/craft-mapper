@@ -376,11 +376,19 @@ function showBrewData(d) {
 }
 
 function createBeerHistogram(beerList) {
-  var dataset = createBeerHistogramData(beerList)
-
   var cWidth = 300,
-      cHeight = 75,
-      barPadding = 1;
+    cHeight = 75,
+    barPadding = 1,
+    factor = 4;
+
+  var dataset = createBeerHistogramData(beerList)
+  var max = _.max(dataset, function(beer) { return beer.number; })
+  max = max.number
+
+  // Adjust scale if max height is going to be too high
+  if (max * factor > (cHeight - 15)) {
+    factor = (cHeight - 15) / max
+  }
 
   var svg = d3.select('.totalBeerChart')
       .append("svg")
@@ -396,11 +404,11 @@ function createBeerHistogram(beerList) {
       return i * (cWidth / dataset.length);
     })
     .attr("y", function(d) {
-      return cHeight - (d.number * 4)
+      return cHeight - (d.number * factor)
     })
     .attr("width", cWidth / dataset.length - barPadding)
     .attr("height", function(d){
-      return d.number * 4;
+      return d.number * factor;
     })
     .on("mouseover", sideMouseover)
     .on("mousemove", sideMousemove)
@@ -419,7 +427,7 @@ function createBeerHistogram(beerList) {
       return i * (cWidth / dataset.length) + 14
     })
     .attr("y", function(d) {
-      return cHeight - (d.number * 4) - 2
+      return cHeight - (d.number * factor) - 2
     })
     .attr("font-family", "sans-serif")
     .attr("font-size", "12px");
