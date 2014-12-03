@@ -14,7 +14,8 @@ var width = 960,
     beerStyles = [],
     beerRatingsDict = {},
     beerRatingsHistogram = {},
-    beerInformationDict = {};
+    beerInformationDict = {}
+    sideDiv = null;
 
 var projection = d3.geo.albersUsa()
     .scale(1000)
@@ -375,11 +376,19 @@ function showBrewData(d) {
 }
 
 function createBeerHistogram(beerList) {
-  var dataset = createBeerHistogramData(beerList)
-
   var cWidth = 300,
-      cHeight = 75,
-      barPadding = 1;
+    cHeight = 75,
+    barPadding = 1,
+    factor = 4;
+
+  var dataset = createBeerHistogramData(beerList)
+  var max = _.max(dataset, function(beer) { return beer.number; })
+  max = max.number
+
+  // Adjust scale if max height is going to be too high
+  if (max * factor > (cHeight - 15)) {
+    factor = (cHeight - 15) / max
+  }
 
   var svg = d3.select('.totalBeerChart')
       .append("svg")
@@ -395,12 +404,15 @@ function createBeerHistogram(beerList) {
       return i * (cWidth / dataset.length);
     })
     .attr("y", function(d) {
-      return cHeight - (d.number * 4)
+      return cHeight - (d.number * factor)
     })
     .attr("width", cWidth / dataset.length - barPadding)
     .attr("height", function(d){
-      return d.number * 4;
-    });
+      return d.number * factor;
+    })
+    .on("mouseover", sideMouseover)
+    .on("mousemove", sideMousemove)
+    .on("mouseout", sideMouseout);
 
   var h = cHeight / dataset.length - barPadding;
 
@@ -415,12 +427,40 @@ function createBeerHistogram(beerList) {
       return i * (cWidth / dataset.length) + 14
     })
     .attr("y", function(d) {
-      return cHeight - (d.number * 4) - 2
+      return cHeight - (d.number * factor) - 2
     })
     .attr("font-family", "sans-serif")
     .attr("font-size", "12px");
 
+  sideDiv = d3.select(".totalBeerChart")
+    .append("div")
+    .attr("class", "sideDiv")
+    .style("opacity", 0)
+}
 
+function sideMouseover() {
+  sideDiv
+    .transition()
+    .duration(500)
+    .style("opacity", 1)
+}
+
+function sideMousemove(d) {
+  showSideDoD(d)
+}
+
+function sideMouseout() {
+  sideDiv
+    .transition()
+    .duration(500)
+    .style("opacity", 0)
+}
+
+function showSideDoD(d) {
+  sideDiv
+    .style("left", (d3.event.pageX) + "px")
+    .style("top", (d3.event.pageY) + "px")
+    .text(d.level)
 }
 
 // return an array with the number of points at each rating
@@ -435,9 +475,9 @@ function createBeerHistogramData(beerList) {
     }
   }
 
-  var order = {"world-class": 1, "outstanding": 2,
-    "very good": 3, "good": 4, "okay": 5,
-    "poor": 6, "awful": 7}
+  var order = {"world-class": 7, "outstanding": 6,
+    "very good": 5, "good": 4, "okay": 3,
+    "poor": 2, "awful": 1}
 
   var bigList = []
   var keys = Object.keys(data)
@@ -447,7 +487,8 @@ function createBeerHistogramData(beerList) {
     var ordering = order[level]
     bigList.push({"level": level, "number": num, "order": ordering})
   }
-  return bigList
+
+  return _.sortBy(bigList, "order")
 }
 
 function processBeers(beer) {
