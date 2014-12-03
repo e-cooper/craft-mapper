@@ -1,17 +1,23 @@
-|,name,capital,latitude,longitude
+initials,name,capital,latitude,longitude
 AL,Alabama,Montgomery,32.361538,-86.279118
 AK,Alaska,Juneau,58.301935,-134.41974
 AZ,Arizona,Phoenix,33.448457,-112.073844
 AR,Arkansas,Little Rock,34.736009,-92.331122
 CA,California,Sacramento,38.555605,-121.468926
+CA,California,San Francisco,37.775,-122.4183333
+CA,California,San Diego,32.7152778,-117.1563889
+CA,California,Los Angeles,34.0522222,-118.2427778
 CO,Colorado,Denver,39.7391667,-104.984167
 CT,Connecticut,Hartford,41.767,-72.677
 DE,Delaware,Dover,39.161921,-75.526755
 FL,Florida,Tallahassee,30.4518,-84.27277
+FL,Florida,Miami,25.7738889,-80.1938889
+FL,Florida,Tampa,27.9472222,-82.4586111
 GA,Georgia,Atlanta,33.76,-84.39
 HI,Hawaii,Honolulu,21.30895,-157.826182
 ID,Idaho,Boise,43.613739,-116.237651
 IL,Illinois,Springfield,39.78325,-89.650373
+IL,Illinois,Chicago,41.8781136,-87.6297982
 IN,Indiana,Indianapolis,39.790942,-86.147685
 IA,Iowa,Des Moines,41.590939,-93.620866
 KS,Kansas,Topeka,39.04,-95.69
@@ -21,31 +27,45 @@ ME,Maine,Augusta,44.323535,-69.765261
 MD,Maryland,Annapolis,38.972945,-76.501157
 MA,Massachusetts,Boston,42.2352,-71.0275
 MI,Michigan,Lansing,42.7335,-84.5467
+MI,Michigan,Detriot,42.3313889,-83.0458333
 MN,Minnesota,Saint Paul,44.95,-93.094
 MS,Mississippi,Jackson,32.32,-90.207
 MO,Missouri,Jefferson City,38.572954,-92.189283
+MO,Missouri,St.Louis,38.6272222,-90.1977778
+MO,Missouri,Kansas City,39.0997222,-94.5783333
 MT,Montana,Helana,46.595805,-112.027031
 NE,Nebraska,Lincoln,40.809868,-96.675345
 NV,Nevada,Carson City,39.160949,-119.753877
+NV,Nevada,Las Vegas,36.175,-115.1363889
 NH,New Hampshire,Concord,43.220093,-71.549127
 NJ,New Jersey,Trenton,40.221741,-74.756138
 NM,New Mexico,Santa Fe,35.667231,-105.964575
 NY,New York,Albany,42.659829,-73.781339
+NY,New York,New York City,40.7141667,-74.0063889
 NC,North Carolina,Raleigh,35.771,-78.638
-ND,North Dakota,Bismarck,48.813343,-100.779004
+NC,North Carolina,Asheville,35.6008333,-82.5541667
+ND,North Dakota,Bismarck,46.813343,-100.779004
 OH,Ohio,Columbus,39.962245,-83.000647
+OH,Ohio,Cincinnati,39.1619444,-84.4569444
 OK,Oklahoma,Oklahoma City,35.482309,-97.534994
 OR,Oregon,Salem,44.931109,-123.029159
 PA,Pennsylvania,Harrisburg,40.269789,-76.875613
+PA,Pennsylvania,Philadelphia,39.9522222,-75.1641667
+PA,Pennsylvania,Pittsburgh,40.4405556,-79.9961111
 RI,Rhode Island,Providence,41.82355,-71.422132
 SC,South Carolina,Columbia,34,-81.035
 SD,South Dakota,Pierre,44.367966,-100.336378
 TN,Tennessee,Nashville,36.165,-86.784
 TX,Texas,Austin,30.266667,-97.75
+TX,Texas,Dallas,32.7833333,-96.8
+TX,Texas,Houston,29.7630556,-95.3630556
 UT,Utah,Salt Lake City,40.7547,-111.892622
 VT,Vermont,Montpelier,44.26639,-72.57194
 VA,Virginia,Richmond,37.54,-77.46
 WA,Washington,Olympia,47.042418,-122.893077
+WA,Washington,Seattle,47.6063889,-122.3308333
 WV,West Virginia,Charleston,38.349497,-81.633294
 WI,Wisconsin,Madison,43.074722,-89.384444
+WI,Wisconsin,Milwaukee,43.0388889,-87.9063889
 WY,Wyoming,Cheyenne,41.145548,-104.802042
+DC,DC,Washington,38.895,-77.0366667
