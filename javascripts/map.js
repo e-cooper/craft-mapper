@@ -102,7 +102,6 @@ function drawMap() {
         .on("mouseout", brewMouseout)
         .on("click", brewClick)
         .on("mousemove", brewMousemove);
-
     });
 
     //read in capital data from CSV here
@@ -132,7 +131,9 @@ function drawMap() {
         .attr("class", "dataPoint")
         .attr("id", function(d) {
           return 'name' + d.capital
-        })  
+        })     
+        .append("svg:title")
+        .text(function(d) { return d.capital+", "+d.name; });
 
     });
 
