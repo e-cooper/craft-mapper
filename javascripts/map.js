@@ -90,7 +90,7 @@ function drawMap() {
               return projection([d.longitude, d.latitude])[1];
           }
         })
-        .attr("r", 1)
+        .attr("r", 3)
         .attr("d", data)
         .style("fill", "blue")
         .attr("opacity", .5)
@@ -131,7 +131,7 @@ function drawMap() {
         .attr("class", "dataPoint")
         .attr("id", function(d) {
           return 'name' + d.capital
-        })     
+        })
         .append("svg:title")
         .text(function(d) { return d.capital+", "+d.name; });
 
@@ -235,10 +235,9 @@ function clicked(d) {
 function zoomed() {
   g.style("stroke-width", 1.5 / d3.event.scale + "px");
   g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-  var radius = 1 / d3.event.scale
+  var radius = 2 / d3.event.scale
   // scale the radius of the points but prevent from being too small/big
-  radius = radius < .4 ? .4 : radius
-  radius = radius <= 1 ? radius : 1
+  radius = radius < .2 ? .2 : radius
   g.selectAll(".dataPoint")
     .attr("r", radius)
 }
