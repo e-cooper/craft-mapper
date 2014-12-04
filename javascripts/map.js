@@ -3,9 +3,10 @@
 // Map zooming code from http://bl.ocks.org/mbostock/9656675
 
 // define any global vars
-var width = 960,
+var width = 800,
     height = 500,
     active = d3.select(null),
+    activeClick = d3.select(null),
     brewViewWidth = 300,
     brewViewHeight = 500,
     beerDict = {},
@@ -249,6 +250,9 @@ function reset() {
   active.classed("active", false);
   active = d3.select(null);
 
+  activeClick.style("fill", "blue");
+  activeClick = d3.select(null);
+
   breweryDiv
     .style("opacity", 0)
 
@@ -276,10 +280,29 @@ function brewMouseout() {
 }
 
 function brewClick(d) {
+  if (activeClick.node() === this) {
+    return reset();
+  }
+  activeClick.style("fill", "blue")
+  activeClick = d3.select(this).style("fill", "red");
+
   breweryDiv
     .style("opacity", 1)
   showBrewData(d)
   handleTransform(d)
+}
+
+function searchClick(node, data) {
+  if (activeClick.node() === node) {
+    return reset();
+  }
+  activeClick.style("fill", "blue")
+  activeClick = d3.select(node).style("fill", "red");
+
+  breweryDiv
+    .style("opacity", 1)
+  showBrewData(data)
+  handleTransform(data)
 }
 
 function handleTransform(d) {
@@ -595,7 +618,7 @@ function animateTimeline() {
 function selectBrewery(id) {
   var node = d3.select('#name'+id)
   if (node != null) {
-    brewClick(node.data()[0])
+    searchClick(node.node(), node.data()[0])
   }
 }
 

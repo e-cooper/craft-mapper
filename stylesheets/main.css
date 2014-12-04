@@ -82,11 +82,18 @@ body {
 .map-data {
 }
 
+.mainTitle h1 {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: bold;
+  font-size: 20px;
+}
+
 .map {
-  width: 960px;
+  width: 800px;
   height: 500px;
   float: left;
-  margin: 15px;
+  margin-right: 15px;
+  border: 1px solid black;
 }
 
 .brewery-view {
@@ -108,7 +115,7 @@ body {
 }
 
 .timeline {
-  width: 960px;
+  width: 800px;
 }
 
 #year {
@@ -164,7 +171,9 @@ body {
 }
 
 .search {
-  margin-top: 15px;
+  position: absolute;
+  margin-top: 10px;
+  margin-left: 10px;
 }
 
 #searchFilter {
