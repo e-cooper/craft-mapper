@@ -122,6 +122,7 @@ body {
   border: 0; 
   color: #f6931f; 
   font-weight: bold;
+  margin-top: 5px;
 }
 
 .bar text {
@@ -253,14 +254,14 @@ body {
 
 #animation-progress {
 	background-color: black;
-	margin-top: 5px;
-	margin-bottom: 5px;
 	width: 0%;
 	height: 10px;
 }
 
 #animateYear {
-  border: 0; 
+  border: 0;
+  margin-top: 10px;
+  margin-bottom: 0px;
   color: #f6931f; 
   font-weight: bold;
   }
