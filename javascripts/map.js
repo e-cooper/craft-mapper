@@ -1,8 +1,7 @@
-// Put map code here
-
+// Contains the main functionality of the map as well as the timeline and sidebar DoD
 // Map zooming code from http://bl.ocks.org/mbostock/9656675
 
-// define any global vars
+// Global variables
 var width = 800,
     height = 500,
     active = d3.select(null),
@@ -18,10 +17,12 @@ var width = 800,
     beerInformationDict = {}
     sideDiv = null;
 
+// use the albers projection for the US map
 var projection = d3.geo.albersUsa()
     .scale(1000)
     .translate([width / 2, height / 2]);
 
+// define the zoom behavior for the map
 var zoom = d3.behavior.zoom()
     .translate([0, 0])
     .scale(1)
@@ -45,7 +46,7 @@ svg.append("rect")
 var g = svg.append("g");
 
 svg
-  .call(zoom) // delete this line to disable free zooming
+  .call(zoom)
   .call(zoom.event);
 
 var div = d3.select(".map").append("div")
@@ -56,8 +57,10 @@ var breweryDiv = d3.select(".brewery-view").append("div")
   .attr("class", "breweryDiv")
   .style("opacity", 0)
 
-// map gets drawn here
+// drawMap draws the map including the brewery points, city names, and acutal
+// state shapes
 function drawMap() {
+  // use US JSON file to populate the actual states
   d3.json("data/us.json", function(error, us) {
     g.selectAll("path")
         .data(topojson.feature(us, us.objects.states).features)
@@ -71,6 +74,7 @@ function drawMap() {
         .attr("class", "mesh")
         .attr("d", path);
 
+<<<<<<< HEAD
     //read in city data from CSV here
      d3.csv("data/cities.csv", function(error, data) {
         g.selectAll("text")
@@ -100,6 +104,9 @@ function drawMap() {
      });
 
     // read in data from CSV here
+=======
+    // brewery data is read in here
+>>>>>>> commenting
     d3.csv("data/data.csv", function(error, data) {
 
       g.selectAll("circle")
@@ -133,7 +140,33 @@ function drawMap() {
         .on("mousemove", brewMousemove);
     });
 
-
+    // read in capital data from CSV here
+     d3.csv("data/cities.csv", function(error, data) {
+        g.selectAll("text")
+          .data(data)
+          .enter()
+          .append("svg:text")
+          .text(function(d){
+            return d.capital;
+          })
+          .attr('x', function(d){
+            longitude = parseFloat(d.longitude);
+          latitude = parseFloat(d.latitude);
+          if (!isNaN(longitude) && !isNaN(latitude)) {
+              return projection([d.longitude, d.latitude])[0];
+          }
+          })
+          .attr('y', function(d){
+            longitude = parseFloat(d.longitude);
+          latitude = parseFloat(d.latitude);
+          if (!isNaN(longitude) && !isNaN(latitude)) {
+              return projection([d.longitude, d.latitude])[1];
+          }
+          })
+          .attr("text-anchor","middle")
+          .attr("font-size","2pt")
+          .style("fill","#a6a6a6")
+     });
 
   });
 }
@@ -183,6 +216,8 @@ function beerCallback(data) {
   setupBeerRatingsHistogram()
 }
 
+// setup the beer ratings histogram that gets the
+// number of beers for each rating at each brewery
 function setupBeerRatingsHistogram() {
   var ratingsKeys = Object.keys(beerRatingsDict)
   for(var i = 0; i < ratingsKeys.length; i++) {
@@ -203,6 +238,7 @@ function loadBreweryRatingData() {
   });
 }
 
+// Callback for the breweryRating information
 function breweryRatingCallback(data) {
   for(var i = 0; i < data.length; i++) {
     breweryRatingDict[data[i].breweryID] = data[i]
@@ -211,7 +247,7 @@ function breweryRatingCallback(data) {
   setupAutocomplete()
 }
 
-// Helper functions for map
+// Is called when a point is clicked on the map
 function clicked(d) {
   if (active.node() === this) return reset();
   active.classed("active", false);
@@ -246,6 +282,8 @@ function stopped() {
   if (d3.event.defaultPrevented) d3.event.stopPropagation();
 }
 
+// remove any active class behavior on the map and return the
+// zoom level back to normal
 function reset() {
   active.classed("active", false);
   active = d3.select(null);
@@ -261,6 +299,7 @@ function reset() {
       .call(zoom.translate([0, 0]).scale(1).event);
 }
 
+// functions for map DoD
 function brewMouseover() {
   div
     .transition()
@@ -279,6 +318,8 @@ function brewMouseout() {
     .style("opacity", 0)
 }
 
+// neccessary to have separate brew and search functions as
+// the search method returns the node and the data seperately
 function brewClick(d) {
   if (activeClick.node() === this) {
     return reset();
@@ -292,6 +333,8 @@ function brewClick(d) {
   handleTransform(d)
 }
 
+// same function as brewclick but neccessary because of the data
+// passed in
 function searchClick(node, data) {
   if (activeClick.node() === node) {
     return reset();
@@ -305,8 +348,8 @@ function searchClick(node, data) {
   handleTransform(data)
 }
 
+// Handle the transform of the brewery points
 function handleTransform(d) {
-
   active.classed("active", false);
   active = d3.select(null);
 
@@ -321,6 +364,7 @@ function handleTransform(d) {
     cy = projection([d.longitude, d.latitude])[1];
   }
 
+  // scale is a value that can be played with
   scale = .04 / Math.max(1 / width, 1 / height),
   translate = [width / 2 - scale * cx, height / 2 - scale * cy];
 
@@ -330,6 +374,7 @@ function handleTransform(d) {
     .call(zoom.translate(translate).scale(scale).event);
 }
 
+// places the DoD ontop of the brewery
 function showBrewDoD(d) {
   div
   .style("left", (d3.event.pageX) + "px")
@@ -337,6 +382,7 @@ function showBrewDoD(d) {
   .text(d.name)
 }
 
+// Function that handles the sidebar DoD data for all of the brewery points
 function showBrewData(d) {
   var breweryRating = breweryRatingDict[d.id]
   var overallRating = breweryRating.breweryRating
@@ -351,6 +397,8 @@ function showBrewData(d) {
     .append("div")
       .attr("class", "breweryStats")
 
+  // if the brewery is missing overall rating data, let's not
+  // put dod on it
   if(overallRating != "") {
     d3.select(".breweryStats")
       .append("div")
@@ -380,6 +428,7 @@ function showBrewData(d) {
         .attr("class", "bRNumber")
         .text(d.yearOpened)
 
+    // grab neccessary information for the histogram
     var beers = beerDict[d.id]
     var beerList = processBeers(beers)
     var length = beerList.length > 5 ? 5 : beerList.length
@@ -394,6 +443,7 @@ function showBrewData(d) {
       .attr("class", "beerRatingTitle")
       .text("Top Beers")
 
+    // iterates through the top beer list
     for (var i = 0; i < length; i++) {
       var entry = beerList[i]
       breweryDiv.append("div")
@@ -426,6 +476,8 @@ function showBrewData(d) {
     }
 }
 
+// function to create the beer histogram. takes in a list of
+// beers
 function createBeerHistogram(beerList) {
   var cWidth = 300,
     cHeight = 75,
@@ -467,6 +519,7 @@ function createBeerHistogram(beerList) {
 
   var h = cHeight / dataset.length - barPadding;
 
+  // DoD for the histogram
   svg.selectAll("text")
     .data(dataset)
     .enter()
@@ -489,6 +542,7 @@ function createBeerHistogram(beerList) {
     .style("opacity", 0)
 }
 
+// DoD functions for the histogram
 function sideMouseover() {
   sideDiv
     .transition()
@@ -526,6 +580,7 @@ function createBeerHistogramData(beerList) {
     }
   }
 
+  // this order can be changed around as needed
   var order = {"world-class": 7, "outstanding": 6,
     "very good": 5, "good": 4, "okay": 3,
     "poor": 2, "awful": 1}
@@ -538,10 +593,11 @@ function createBeerHistogramData(beerList) {
     var ordering = order[level]
     bigList.push({"level": level, "number": num, "order": ordering})
   }
-
+  // return the sorted array, can change the order up top if needed
   return _.sortBy(bigList, "order")
 }
 
+// clean up the beer data into something that we can parse more easily
 function processBeers(beer) {
   var firstList = []
   for (var i = 0; i < beer.length; i++) {
