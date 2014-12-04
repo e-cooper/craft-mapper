@@ -74,7 +74,6 @@ function drawMap() {
         .attr("class", "mesh")
         .attr("d", path);
 
-<<<<<<< HEAD
     //read in city data from CSV here
      d3.csv("data/cities.csv", function(error, data) {
         g.selectAll("text")
@@ -104,9 +103,6 @@ function drawMap() {
      });
 
     // read in data from CSV here
-=======
-    // brewery data is read in here
->>>>>>> commenting
     d3.csv("data/data.csv", function(error, data) {
 
       g.selectAll("circle")
