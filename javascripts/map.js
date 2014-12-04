@@ -613,10 +613,8 @@ function animateTimeline() {
 }
 
 // Search functionality
-var test;
 function selectBrewery(id) {
   var node = d3.select('#name'+id)
-  test = node
   if (node != null) {
     searchClick(node.node(), node.data()[0])
   }
