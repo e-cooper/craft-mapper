@@ -94,7 +94,7 @@ function drawMap() {
         .attr("d", data)
         .style("fill", "blue")
         .attr("opacity", .5)
-        .attr("class", "dataPoint")
+        .attr("class", "dataPoint brewery")
         .attr("id", function(d) {
           return 'name' + d.id
         })
@@ -128,7 +128,7 @@ function drawMap() {
         .attr("d", data)
         .style("fill", "red")
         .attr("opacity", 1)
-        .attr("class", "dataPoint")
+        .attr("class", "dataPoint city")
         .attr("id", function(d) {
           return 'name' + d.capital
         })
@@ -543,7 +543,7 @@ $(function() {
     values: [ 1786, 2014 ],
     slide: function( event, ui ) {
       $( "#year" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] )
-      d3.selectAll("circle").attr("visibility", function(d) {
+      d3.selectAll("circle.brewery").attr("visibility", function(d) {
         this.classList.remove("hiddenByYear");
         if (d.yearOpened || ui.values[1] != 2014) {
           var yearInBounds = d.yearOpened >= ui.values[0] && d.yearOpened <= ui.values[1];
@@ -572,23 +572,25 @@ function animateTimeline() {
   var counter = min;
   var intervalId = setInterval(function(){
     (function(max) {
-	  if(counter <= max) {
-		d3.selectAll("circle").attr("visibility", function(d) {
-		  if(d.yearOpened <= counter) {
-			return "visible";
-		  } else {
-			return "hidden";
-		  }
-		});
-		var displacement = ((counter - min) / 228)*100;
-		document.getElementById("animation-progress").style.width = displacement + "%";
-		document.getElementById("animateYear").value = counter;
-		counter += 1;
-	  } else {
-		clearInterval(intervalId);
-		document.getElementById("animateYear").value = "Animate Map";
-	  }
-	})(max);
+  	  if(counter <= max) {
+    		d3.selectAll("circle.brewery").attr("visibility", function(d) {
+    		  if (d.yearOpened <= counter) {
+    			 return "visible";
+    		  } 
+          else {
+    			 return "hidden";
+    		  }
+  		  });
+    		var displacement = ((counter - min) / 228)*100;
+    		document.getElementById("animation-progress").style.width = displacement + "%";
+    		document.getElementById("animateYear").value = counter;
+    		counter += 1;
+	    } 
+      else {
+		    clearInterval(intervalId);
+		    document.getElementById("animateYear").value = "Animate Map";
+	    }
+	  })(max);
   }, 100);
 }
 

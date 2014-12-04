@@ -86,7 +86,7 @@ d3.csv("data/ratings.csv", function(error, data) {
 });
 
 function brushed() {
-  d3.selectAll("circle").attr("visibility", function(d) {
+  d3.selectAll("circle.brewery").attr("visibility", function(d) {
     var brewery = breweryRatingDict[d.id];
     var rating = +brewery.breweryRating;
     this.classList.remove("hiddenByRating");
