@@ -71,7 +71,7 @@ function drawMap() {
         .attr("class", "mesh")
         .attr("d", path);
 
-    //read in capital data from CSV here
+    //read in city data from CSV here
      d3.csv("data/cities.csv", function(error, data) {
         g.selectAll("text")
           .data(data)
