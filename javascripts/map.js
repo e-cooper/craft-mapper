@@ -105,37 +105,32 @@ function drawMap() {
     });
 
     //read in capital data from CSV here
-    // d3.csv("data/capitals.csv", function(error, data) {
-
-    //   g.selectAll("circle")
-    //     .data(data)
-    //   .enter().append("circle")
-    //     .attr("cx", function(d) {
-    //       longitude = parseFloat(d.longitude);
-    //       latitude = parseFloat(d.latitude);
-    //       if (!isNaN(longitude) && !isNaN(latitude)) {
-    //           return projection([d.longitude, d.latitude])[0];
-    //       }
-    //     })
-    //     .attr("cy", function(d) {
-    //       longitude = parseFloat(d.longitude);
-    //       latitude = parseFloat(d.latitude);
-    //       if (!isNaN(longitude) && !isNaN(latitude)) {
-    //           return projection([d.longitude, d.latitude])[1];
-    //       }
-    //     })
-    //     .attr("r", 1.5)
-    //     .attr("d", data)
-    //     .style("fill", "red")
-    //     .attr("opacity", 1)
-    //     .attr("class", "dataPoint")
-    //     .attr("id", function(d) {
-    //       return 'name' + d.capital
-    //     })
-    //     .append("svg:title")
-    //     .text(function(d) { return d.capital+", "+d.name; });
-
-    // });
+     d3.csv("data/cities.csv", function(error, data) {
+        g.selectAll("text")
+          .data(data)
+          .enter()
+          .append("svg:text")
+          .text(function(d){
+            return d.capital;
+          })
+          .attr('x', function(d){
+            longitude = parseFloat(d.longitude);
+          latitude = parseFloat(d.latitude);
+          if (!isNaN(longitude) && !isNaN(latitude)) {
+              return projection([d.longitude, d.latitude])[0];
+          }
+          })
+          .attr('y', function(d){
+            longitude = parseFloat(d.longitude);
+          latitude = parseFloat(d.latitude);
+          if (!isNaN(longitude) && !isNaN(latitude)) {
+              return projection([d.longitude, d.latitude])[1];
+          }
+          })
+          .attr("text-anchor","middle")
+          .attr("font-size","2pt")
+          .style("fill","#a6a6a6")
+     });
 
   });
 }
