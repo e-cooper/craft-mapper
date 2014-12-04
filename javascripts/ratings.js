@@ -7,7 +7,7 @@ var numbins = (maxbin - minbin) / binsize;
 var binmargin = 2;
 
 var margin = {top: 30, right: 10, bottom: 20, left: 40},
-    ratingWidth = 960 - margin.left - margin.right,
+    ratingWidth = 800 - margin.left - margin.right,
     ratingHeight = 150 - margin.top - margin.bottom;
 
 var x = d3.scale.linear().range([0, ratingWidth]),

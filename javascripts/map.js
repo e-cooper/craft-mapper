@@ -3,7 +3,7 @@
 // Map zooming code from http://bl.ocks.org/mbostock/9656675
 
 // define any global vars
-var width = 960,
+var width = 800,
     height = 500,
     active = d3.select(null),
     brewViewWidth = 300,
