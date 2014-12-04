@@ -70,6 +70,34 @@ function drawMap() {
         .attr("class", "mesh")
         .attr("d", path);
 
+    //read in capital data from CSV here
+     d3.csv("data/cities.csv", function(error, data) {
+        g.selectAll("text")
+          .data(data)
+          .enter()
+          .append("svg:text")
+          .text(function(d){
+            return d.capital;
+          })
+          .attr('x', function(d){
+            longitude = parseFloat(d.longitude);
+          latitude = parseFloat(d.latitude);
+          if (!isNaN(longitude) && !isNaN(latitude)) {
+              return projection([d.longitude, d.latitude])[0];
+          }
+          })
+          .attr('y', function(d){
+            longitude = parseFloat(d.longitude);
+          latitude = parseFloat(d.latitude);
+          if (!isNaN(longitude) && !isNaN(latitude)) {
+              return projection([d.longitude, d.latitude])[1];
+          }
+          })
+          .attr("text-anchor","middle")
+          .attr("font-size","2pt")
+          .style("fill","#a6a6a6")
+     });
+
     // read in data from CSV here
     d3.csv("data/data.csv", function(error, data) {
 
@@ -104,33 +132,7 @@ function drawMap() {
         .on("mousemove", brewMousemove);
     });
 
-    //read in capital data from CSV here
-     d3.csv("data/cities.csv", function(error, data) {
-        g.selectAll("text")
-          .data(data)
-          .enter()
-          .append("svg:text")
-          .text(function(d){
-            return d.capital;
-          })
-          .attr('x', function(d){
-            longitude = parseFloat(d.longitude);
-          latitude = parseFloat(d.latitude);
-          if (!isNaN(longitude) && !isNaN(latitude)) {
-              return projection([d.longitude, d.latitude])[0];
-          }
-          })
-          .attr('y', function(d){
-            longitude = parseFloat(d.longitude);
-          latitude = parseFloat(d.latitude);
-          if (!isNaN(longitude) && !isNaN(latitude)) {
-              return projection([d.longitude, d.latitude])[1];
-          }
-          })
-          .attr("text-anchor","middle")
-          .attr("font-size","2pt")
-          .style("fill","#a6a6a6")
-     });
+
 
   });
 }
