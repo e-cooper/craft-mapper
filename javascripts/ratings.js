@@ -35,7 +35,7 @@ var context = svg.append("g")
 
 d3.csv("data/ratings.csv", function(error, data) {
 
-  var values = data.filter(function(d) { 
+  var values = data.filter(function(d) {
     if (d.breweryRating) {
       return d.breweryRating;
     }
