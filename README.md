@@ -1,28 +1,27 @@
 craft-mapper
 ============
 
-Info Visualization of Craft Breweries in the U.S.
+[Live Demo](http://www.elicooper.net/craft-mapper)
 
-### Contributing
+Information Visualization of Craft Breweries in the U.S.
 
-First switch to the `master` branch and `git pull`
+Built on [D3.js](http://d3js.org/) and [topojson](https://github.com/mbostock/topojson) with the help of an unofficial [Beer Advocate API](https://github.com/stursby/beer-advocate-api). Data is from [BreweryDB](http://http://www.brewerydb.com/) and [Beer Advocate](http://beeradvocate.com/).
 
-1. Create new branch based off the `master` branch
-2. Edit files locally
-3. Add and commit changes
-4. Push new branch to the repo
-5. Create a pull request with master as the base and your new branch as the comparison
+## Overview
 
+This visualization allows users to sort through many U.S. craft breweries to get a better understanding of how the industry has changed over time and where it stands now. 
 
-### Getting the Data
-How to get data from BreweryDB into a csv:
-	curl command- curl -o ./Desktop/breweryInfo.json http://api.brewerydb.com/v2/breweries?key=5040cbeeac3176aa6cefa6ee079d1ff7
-	that command should get every brewery's info once we get the premium account(may need to add locations endpoint as well to this) 
-	
-	will output to .json file and then use this website to convert to csv
-	http://www.convertcsv.com/json-to-csv.htm
-	
-	should work. I put an example(the .json file and .csv file) of doing a GET on one brewery info. the curl command i used was: 
-	curl -o ./Desktop/breweryInfo.json http://api.brewerydb.com/v2/brewery/KRB0Bo/locations?key=5040cbeeac3176aa6cefa6ee079d1ff7
-	
-	We can delete all the columns we don't need and rename the headers too. 
+Features include:
+- U.S. map of craft breweries
+- Zoom and state select to focus attention on a certain area
+- Searchbox with brewery name autocomplete
+- Year slider to filter map and a timelapse animation
+- Brewery rating histogram with brush to filter map
+- Details on demand for plotted points
+- Metadata upon selection including the brewery's founding year, its ratings, and information on beers offered
+
+## Contributors
+- Eli Cooper
+- Rebecca Norton
+- Forrest Peterson
+- Alex Roe

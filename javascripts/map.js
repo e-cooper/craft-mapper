@@ -61,7 +61,7 @@ var breweryDiv = d3.select(".brewery-view").append("div")
 // state shapes
 function drawMap() {
   // use US JSON file to populate the actual states
-  d3.json("data/us.json", function(error, us) {
+  d3.json("https://dl.dropboxusercontent.com/u/40727734/cbm-us.json", function(error, us) {
     g.selectAll("path")
         .data(topojson.feature(us, us.objects.states).features)
       .enter().append("path")
@@ -75,7 +75,7 @@ function drawMap() {
         .attr("d", path);
 
     //read in city data from CSV here
-     d3.csv("data/cities.csv", function(error, data) {
+     d3.csv("https://dl.dropboxusercontent.com/u/40727734/cbm-cities.csv", function(error, data) {
         g.selectAll("text")
           .data(data)
           .enter()
@@ -103,7 +103,7 @@ function drawMap() {
      });
 
     // read in data from CSV here
-    d3.csv("data/data.csv", function(error, data) {
+    d3.csv("https://dl.dropboxusercontent.com/u/40727734/cbm-data.csv", function(error, data) {
 
       g.selectAll("circle")
         .data(data)
@@ -137,7 +137,7 @@ function drawMap() {
     });
 
     // read in capital data from CSV here
-     d3.csv("data/cities.csv", function(error, data) {
+     d3.csv("https://dl.dropboxusercontent.com/u/40727734/cbm-cities.csv", function(error, data) {
         g.selectAll("text")
           .data(data)
           .enter()
@@ -169,7 +169,7 @@ function drawMap() {
 
 // Load in the beer data using papaparse
 function loadBeerData() {
-  var beer = Papa.parse("data/beer.csv", {
+  var beer = Papa.parse("https://dl.dropboxusercontent.com/u/40727734/cbm-beer.csv", {
     header: true,
     download: true,
     complete: function(results) {
@@ -225,7 +225,7 @@ function setupBeerRatingsHistogram() {
 
 // Load in the brewery rating data
 function loadBreweryRatingData() {
-  var brewRating = Papa.parse("data/ratings.csv", {
+  var brewRating = Papa.parse("https://dl.dropboxusercontent.com/u/40727734/cbm-ratings.csv", {
     header: true,
     download: true,
     complete: function(results) {

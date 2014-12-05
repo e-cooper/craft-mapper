@@ -33,7 +33,7 @@ var context = svg.append("g")
     .attr("class", "context")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.csv("data/ratings.csv", function(error, data) {
+d3.csv("https://dl.dropboxusercontent.com/u/40727734/cbm-ratings.csv", function(error, data) {
 
   var values = data.filter(function(d) {
     if (d.breweryRating) {
