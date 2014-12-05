@@ -13,7 +13,8 @@ var margin = {top: 30, right: 10, bottom: 20, left: 40},
 var x = d3.scale.linear().range([0, ratingWidth]),
     y = d3.scale.linear().range([ratingHeight, 0]);
 
-var xAxis = d3.svg.axis().scale(x).orient("bottom");
+var xAxis = d3.svg.axis().scale(x).orient("bottom"),
+    yAxis = d3.svg.axis().scale(y).orient("left");;
 
 var brush = d3.svg.brush()
     .x(x)
@@ -21,7 +22,7 @@ var brush = d3.svg.brush()
 
 var svg = d3.select(".ratings").append("svg")
     .attr("width", ratingWidth + margin.left + margin.right)
-    .attr("ratingHeight", ratingHeight + margin.top + margin.bottom);
+    .attr("height", ratingHeight + margin.top + margin.bottom + 50);
 
 svg.append("defs").append("clipPath")
     .attr("id", "clip")
@@ -76,6 +77,22 @@ d3.csv("https://dl.dropboxusercontent.com/u/40727734/cbm-ratings.csv", function(
       .attr("class", "x axis")
       .attr("transform", "translate(0," + ratingHeight + ")")
       .call(xAxis);
+
+  svg.append("text")
+      .attr("class", "y label")
+      .attr("text-anchor", "end")
+      .attr("y", 6)
+      .attr("dy", "8px")
+      .attr("dx", "-20px")
+      .attr("transform", "rotate(-90)")
+      .text("# of Breweries");
+
+  svg.append("text")
+      .attr("class", "x label")
+      .attr("text-anchor", "end")
+      .attr("x", ratingWidth/2 + margin.left)
+      .attr("dy", ratingHeight + 70)
+      .text("Brewery Rating");
 
   context.append("g")
       .attr("class", "x brush")

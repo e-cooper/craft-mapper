@@ -123,8 +123,6 @@ function drawMap() {
           }
         })
         .attr("r", 3)
-        .attr("d", data)
-        .style("fill", "blue")
         .attr("opacity", .5)
         .attr("class", "dataPoint brewery")
         .attr("id", function(d) {
@@ -284,7 +282,7 @@ function reset() {
   active.classed("active", false);
   active = d3.select(null);
 
-  activeClick.style("fill", "blue");
+  activeClick.classed("current", false);
   activeClick = d3.select(null);
 
   breweryDiv
@@ -300,7 +298,7 @@ function brewMouseover() {
   div
     .transition()
     .duration(500)
-    .style("opacity", 1)
+    .style("opacity", 0.8)
 }
 
 function brewMousemove(d) {
@@ -320,8 +318,8 @@ function brewClick(d) {
   if (activeClick.node() === this) {
     return reset();
   }
-  activeClick.style("fill", "blue")
-  activeClick = d3.select(this).style("fill", "red");
+  activeClick.classed("current", false)
+  activeClick = d3.select(this).classed("current", true);
 
   breweryDiv
     .style("opacity", 1)
@@ -335,8 +333,8 @@ function searchClick(node, data) {
   if (activeClick.node() === node) {
     return reset();
   }
-  activeClick.style("fill", "blue")
-  activeClick = d3.select(node).style("fill", "red");
+  activeClick.classed("current", false)
+  activeClick = d3.select(node).classed("current", true);
 
   breweryDiv
     .style("opacity", 1)
@@ -373,8 +371,8 @@ function handleTransform(d) {
 // places the DoD ontop of the brewery
 function showBrewDoD(d) {
   div
-  .style("left", (d3.event.pageX) + "px")
-  .style("top", (d3.event.pageY) + "px")
+  .style("left", (d3.event.pageX) + 10 + "px")
+  .style("top", (d3.event.pageY) + 10 + "px")
   .text(d.name)
 }
 
@@ -431,7 +429,7 @@ function showBrewData(d) {
 
     breweryDiv.append("div")
       .attr("class", "totalBeerChart")
-      .text("Beer Distribution")
+      .text("Beer Distribution");
 
     createBeerHistogram(beerList)
 
@@ -452,7 +450,7 @@ function showBrewData(d) {
           .attr("class", "left")
           .style("height", height + "px")
         .append("p")
-          .attr("class", "topBeer")
+          .attr("class", "topBeer beerName")
           .text(entry.name)
         .append("p")
           .text(entry.style)
@@ -461,7 +459,7 @@ function showBrewData(d) {
         .append("div")
           .attr("class", "right")
         .append("p")
-          .attr("class", "topBeer")
+          .attr("class", "topBeer ratingScore")
           .text(entry.rating)
         .append("p")
           .text(entry.beerRating)
@@ -528,9 +526,7 @@ function createBeerHistogram(beerList) {
     })
     .attr("y", function(d) {
       return cHeight - (d.number * factor) - 2
-    })
-    .attr("font-family", "sans-serif")
-    .attr("font-size", "12px");
+    });
 
   sideDiv = d3.select(".totalBeerChart")
     .append("div")
@@ -543,7 +539,7 @@ function sideMouseover() {
   sideDiv
     .transition()
     .duration(500)
-    .style("opacity", 1)
+    .style("opacity", 0.8)
 }
 
 function sideMousemove(d) {
@@ -638,13 +634,22 @@ $(function() {
 });
 
 //animate timeline
-function animateTimeline() {
+$("#animateYear").on("click", function (e) {
+  // prevent multiple button clicks
+  if ($(this).hasClass("js-processing")) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    return;
+  }
+
+  $(this).addClass("js-processing");
+
   var min = 1786;
   var max = 2014;
   var counter = min;
   var intervalId = setInterval(function(){
     (function(max) {
-  	  if(counter <= max) {
+  	  if (counter <= max) {
     		d3.selectAll("circle.brewery").attr("visibility", function(d) {
     		  if (d.yearOpened <= counter) {
     			 return "visible";
@@ -654,17 +659,19 @@ function animateTimeline() {
     		  }
   		  });
     		var displacement = ((counter - min) / 228)*100;
-    		document.getElementById("animation-progress").style.width = displacement + "%";
-    		document.getElementById("animateYear").value = counter;
+    		$("#animation-progress").width(displacement + "%");
+    		$("#animateYear").val(counter);
     		counter += 1;
 	    } 
       else {
 		    clearInterval(intervalId);
-		    document.getElementById("animateYear").value = "Animate Map";
+        $("#animation-progress").width(0);
+		    $("#animateYear").val("Animate Map");
+        $(this).removeClass("js-processing");
 	    }
 	  })(max);
   }, 100);
-}
+});
 
 // Search functionality
 function selectBrewery(id) {

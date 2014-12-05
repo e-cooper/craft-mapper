@@ -1,10 +1,18 @@
 /* Main CSS file for page styling */
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,700);
 
 body {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-family: "Roboto", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 300;
+  font-size: 10px;
+  background-color: #eee;
 }
 
+.wrapper {
+  display: block;
+  margin: 0 auto;
+  max-width: 1200px;
+}
 
 /* CSS from  http://bl.ocks.org/mbostock/9656675 */
 
@@ -16,7 +24,7 @@ body {
 .feature {
   fill: lightgrey;
   cursor: pointer;
-  stroke: white;
+  stroke: #eee;
 }
 
 .feature.active {
@@ -25,41 +33,35 @@ body {
 
 .mesh {
   fill: none;
-  stroke: white;
+  stroke: #eee;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 /* end block from http://bl.ocks.org/mbostock/9656675 */
 
-div.brewDiv {
-    position: absolute;
-    text-align: center;
-    width: 60px;
-    padding: 8px;
-    font: 10px sans-serif;
-    background: #ddd;
-    border: solid 1px #aaa;
-    pointer-events: none;
-}
-
-div.sideDiv {
-    position: absolute;
-    text-align: center;
-    width: 60px;
-    padding: 8px;
-    font: 10px sans-serif;
-    background: #ddd;
-    border: solid 1px #aaa;
-    pointer-events: none;
-}
-
-body {
+.brewDiv, .sideDiv {
+  position: absolute;
+  text-align: center;
+  width: 60px;
+  padding: 8px;
   font: 10px sans-serif;
+  background: #F44336;
+  color: #fff;
+  border-radius: 5px;
+  pointer-events: none;
+}
+
+circle.brewery {
+  fill: #3F51B5;
+}
+
+circle.brewery.current {
+  fill: #F44336;
 }
 
 .bar rect {
-  fill: black;
+  fill: #3F51B5;
   shape-rendering: crispEdges;
 }
 
@@ -79,13 +81,12 @@ body {
   shape-rendering: crispEdges;
 }
 
-.map-data {
-}
-
 .mainTitle h1 {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  font-weight: bold;
-  font-size: 20px;
+  font-weight: 700;
+  font-size: 24px;
+  text-align: center;
+  background-color: #fff;
+  padding: 10px 0;
 }
 
 .map {
@@ -93,7 +94,12 @@ body {
   height: 500px;
   float: left;
   margin-right: 15px;
-  border: 1px solid black;
+  border-radius: 5px;
+  border: 2px solid lightgrey;
+}
+
+.map text {
+  cursor: pointer;
 }
 
 .brewery-view {
@@ -103,7 +109,6 @@ body {
 }
 
 .breweryName {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: bold;
   font-size: 20px;
   margin-bottom: 0;
@@ -120,9 +125,10 @@ body {
 
 #year {
   border: 0; 
-  color: #f6931f; 
+  color: #F44336; 
   font-weight: bold;
   margin-top: 5px;
+  background-color: #eee;
 }
 
 .bar text {
@@ -131,19 +137,23 @@ body {
 
 .breweryStats div {
   float: left;
-  margin-right: 10px;
+  margin: 20px;
 }
 
 .breweryRating {
   width: 50px;
   height: 50px;
-  margin-top: 10px;
+  margin: 10px;
   float: left;
 }
 
 .breweryRating p {
   text-align: center;
   margin: 0px;
+}
+
+text.y.label, text.x.label {
+  font-size: 16px;
 }
 
 .breweryRating .bRNumber {
@@ -154,7 +164,6 @@ body {
   width: 50px;
   height: 50px;
   margin-top: 10px;
-  margin-left: 5px;
   float: left;
 }
 
@@ -180,6 +189,10 @@ body {
 #searchFilter {
   width: 250px;
   height: 15px;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  border: none;
 }
 
 .bRNumber {
@@ -189,7 +202,7 @@ body {
 .yearTitle {
   text-align: center;
   height: 50px;
-  margin-top: 10px;
+  margin: 10px;
 }
 
 .yearTitle p {
@@ -197,7 +210,6 @@ body {
 }
 
 .beerRatingView {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   font-weight: 300;
   font-size: 15px;
   border-bottom: 1px solid black;
@@ -233,27 +245,41 @@ body {
   margin-top: 16px;
 }
 
-.topBeer p {
+.topBeer.beerName {
+  font-weight: 700;
+}
+
+.topBeer.ratingScore > p, .topBeer.beerName > p {
   font-size: 11px;
-  margin-top: 0;
-  font-weight: normal;
+  margin: 0;
+  font-weight: 400;
 }
 
 .beerRatingTitle {
   font-weight: bold;
-  font-size: 15px;
-  margin-bottom: -10px;
+  font-size: 18px;
+  margin-top: 35px;
 }
 
 .totalBeerChart {
   width: 300px;
-  margin-bottom: 15px;
-  font-weight: bold;
-  font-size: 15px;
+  margin: 15px 0;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.totalBeerChart text {
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.totalBeerChart rect {
+  fill: #3F51B5;
+  shape-rendering: crispEdges;
 }
 
 #animation-progress {
-	background-color: black;
+	background-color: #F44336;
 	width: 0%;
 	height: 10px;
 }
@@ -262,6 +288,9 @@ body {
   border: 0;
   margin-top: 10px;
   margin-bottom: 0px;
-  color: #f6931f; 
+  color: #fff; 
+  background-color: #F44336;
+  border-radius: 5px;
   font-weight: bold;
-  }
+  padding: 5px 20px;
+}
